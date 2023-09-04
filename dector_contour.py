@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 
-
 red_lower = np.array([0, 120, 70])
 red_upper = np.array([10, 255, 255])
 yellow_lower = np.array([20, 100, 100])
