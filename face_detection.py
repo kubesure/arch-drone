@@ -2,8 +2,6 @@
 # import libraries of python OpenCV
 # where its functionality resides
 import cv2
-import os
-
 
 face_cascade = cv2.CascadeClassifier('./data/haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier('./data/haarcascade_eye.xml')
@@ -12,7 +10,7 @@ eye_glass_cascade = cv2.CascadeClassifier('./data/haarcascade_eye.xml')
 cap = cv2.VideoCapture(0)
 
 # loop runs if capturing has been initialized.
-while 1:
+while True:
 
 	# reads frames from a camera
 	ret, img = cap.read()
