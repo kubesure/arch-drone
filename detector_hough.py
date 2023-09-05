@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-cap = cv2.VideoCapture('./data/drone_scan_360.mov')
+cap = cv2.VideoCapture('./data/videos/scan_wihout_bg_1.mov')
 
 while cap.isOpened():
     ret, frame = cap.read()
