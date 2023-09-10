@@ -1,29 +1,35 @@
+import cv2
 from djitellopy import Tello
-from arch_logger import logger
+from detector import edge as ed
+import config_loader 
 
-def main():
-    tello = Tello()
+class TelloVideoStream:
+    def __init__(self, tello):
+        self.tello = tello
+        self.frame_read = self.tello.get_frame_read()
 
-    try:
-        tello.connect()
-        battery_percentage = tello.get_battery()
+    def start(self):
+        detector = ed.EdgeDector(config_loader.get_configurations())
 
-        if int(battery_percentage) < 20:  # This is just an example, adjust according to your needs.
-            logger.info("Battery is too low to fly.")
-            return
+        while True:
+            frame = self.frame_read.frame
+            detector.get_x_y_z(frame)
+            cv2.imshow("Tello Video Feed", frame)
+           
+            # Press 'q' to exit the video window
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
-        tello.takeoff()
+        cv2.destroyAllWindows()
 
-        tello.move_left(100)
-        tello.rotate_counter_clockwise(90)
-        tello.move_forward(100)
-    
-    except Exception as e:
-        logger.error(f"An error occurred: {e}")
+# Connect to Tello and start video streaming
+tello = Tello()
+tello.connect()
+tello.streamon()
 
-    finally:
-        logger.info("Force landing due to exception")
-        tello.land()
+video_stream = TelloVideoStream(tello)
+video_stream.start()
 
-if __name__ == "__main__":
-    main()
+tello.streamoff()
+
+
