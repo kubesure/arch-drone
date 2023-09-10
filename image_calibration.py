@@ -34,8 +34,8 @@ for filename in os.listdir(image_folder):
             print(f"Detected {len(corners)} corners in {filename}")
             
             img_with_corners = cv2.drawChessboardCorners(img, pattern_size, corners, ret)
-            cv2.imshow('Corners', img_with_corners)
-            cv2.waitKey(0)
+            #cv2.imshow('Corners', img_with_corners)
+            #cv2.waitKey(0)
         else:
             print(f"No corners detected in {filename}")
 cv2.destroyAllWindows()
@@ -43,15 +43,20 @@ cv2.destroyAllWindows()
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, gray.shape[::-1], None, None)
 
 if ret:
-    print("Camera matrix:")
-    print(mtx)
-    print("\nDistortion coefficients:")
-    print(dist)
-    # print(",".join(map(str, dist.ravel())))
+    print('Camera.fx: ', mtx[0][0])
+    print('Camera.fy: ', mtx[1][1])
+    print('Camera.cx: ', mtx[0][2])
+    print('Camera.cy: ', mtx[1][2])
+    print()
+    print('Camera.k1: ', dist[0][0])
+    print('Camera.k2: ', dist[0][1])
+    print('Camera.p1: ', dist[0][2])
+    print('Camera.p2: ', dist[0][3])
+    print('Camera.k3: ', dist[0][4])
     rms = np.sqrt(np.mean(np.array(ret) ** 2))
     print("\nRMS error:", rms)
 else:
     print("Calibration failed!")
 
-np.save("camera_matrix.npy", mtx)
-np.save("distortion_coefficients.npy", dist)
+np.save("./data/camera_matrix.npy", mtx)
+np.save("./data/distortion_coefficients.npy", dist)
