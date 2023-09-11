@@ -48,7 +48,7 @@ class EdgeDector:
                             center_radius = 3
                             #draw center black circle
                             cv2.circle(frame, (int(x), int(y)), center_radius, center_color, -1)
-                            return x,y,z
+                            return x,y,z,area
             else:
                 None,None,None
 

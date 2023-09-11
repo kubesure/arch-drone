@@ -17,8 +17,8 @@ while cap.isOpened():
     result= detector.get_x_y_z(frame)    
 
     if result is not None:
-        x,y,z = result
-        #print(f"x: {x}, y: {y}, z: {z}")
+        x,y,z,area = result
+        print(f"x: {x}, y: {y}, z: {z} area: {area}")
     else:
         #print("No suitable contour found")  
         pass      
