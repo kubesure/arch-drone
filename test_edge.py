@@ -6,6 +6,7 @@ from detector import edge as ed
 #cap = cv2.VideoCapture('./data/videos/drone_scan_360.mov')
 cap = cv2.VideoCapture('./data/videos/scan_wihout_bg_1.mov')
 #cap = cv2.VideoCapture('./data/videos/scan_2_rinr_angular_1.mov')
+#cap = cv2.VideoCapture('./data/videos/scan_2_rinr_angular_1.mov')
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -17,9 +18,10 @@ while cap.isOpened():
 
     if result is not None:
         x,y,z = result
-        print(f"x: {x}, y: {y}, z: {z}")
+        #print(f"x: {x}, y: {y}, z: {z}")
     else:
-        print("No suitable contour found")        
+        #print("No suitable contour found")  
+        pass      
             
     cv2.imshow("Hoops", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):

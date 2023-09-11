@@ -4,7 +4,7 @@
 import numpy as np
 import cv2
 
-image_folder = "./data/images"
+image_folder = "./data/images/chessboard"
 
 pattern_size = (7, 7)
 

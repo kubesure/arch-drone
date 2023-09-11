@@ -7,8 +7,8 @@ import threading
 
 class TelloVideoStream:
     def __init__(self, drone):
-        self.tello = drone
-        self.frame_read = self.drone.get_frame_read()
+        self.drone = drone
+        self.frame_read = self.drone.get_frame_read()   
 
     def start(self):
         detector = ed.EdgeDector(config_loader.get_configurations())
@@ -20,7 +20,8 @@ class TelloVideoStream:
                 x,y,z = result
                 print(f"x: {x}, y: {y}, z: {z}")
             else:
-                print("No suitable contour found") 
+                pass
+                #print("No suitable contour found") 
 
             cv2.imshow("Drone Video Feed", frame)
            
