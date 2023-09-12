@@ -1,11 +1,16 @@
 import cv2
 import numpy as np
 import math
-from calibration import undistort 
 
 class EdgeDector:
     def __init__(self, config):
         self.config = config
+
+    def convert_circle_cm(self, x_pixel, y_pixel, r_pixel, scaling_factor):
+        x_cm = x_pixel * scaling_factor
+        y_cm = y_pixel * scaling_factor
+        r_cm = r_pixel * scaling_factor
+        return x_cm, y_cm, r_cm
 
     def get_x_y_z(self, frame):
         area_red_cms = math.pi * (self.config['diameter_red_cms'] / 2)**2
@@ -20,35 +25,28 @@ class EdgeDector:
         for contour in contours:  
             area = cv2.contourArea(contour)
             #eliminate small contours
-            if area > 400: 
-                #get red circle closest to red circle area in pixel
-                if area_red_pixel < area:
-                    perimeter = cv2.arcLength(contour, True)
-                    if perimeter == 0:  
-                        circularity = 0
-                    else:
-                        circularity = 4 * math.pi * area / (perimeter**2)
-                        # Calculate circularity add aspect ratio if possible 
-                        if circularity > 0.4:
-                            (x, y), radius_pixel = cv2.minEnclosingCircle(contour)
-                            #Calculate pixel radius to cms radius can be used to 
-                            #Eliminate anything not red and yellow rings in radius
-                            scale_cm_per_pixel = KNOWN_RADIUS_RED_CM / radius_pixel
-                            actual_radius_cm = radius_pixel * scale_cm_per_pixel  
-
-                            #Diameter in pixel 
-                            D_image = 2 * radius_pixel
-                            #Calculate distance
-                            z = (self.config['fx'] * self.config['diameter_red_cms']) / D_image
-                            print(f"Circulaity {circularity} radius {actual_radius_cm} d_image {D_image} x: {y} y: {y} z: {z} area: {area}" )
-
-                            #draw ring contour
-                            cv2.drawContours(frame, [contour],  -1, (255, 0, 0), 2)
-                            center_color = (0, 0, 0)  
-                            center_radius = 3
-                            #draw center black circle
-                            cv2.circle(frame, (int(x), int(y)), center_radius, center_color, -1)
-                            return x,y,z,area
+            if area > 600: 
+                #print(f"area_red_pixel: {area_red_pixel} area {area}")    
+                (x, y), radius_pixel = cv2.minEnclosingCircle(contour)
+                scaling_factor = KNOWN_RADIUS_RED_CM / radius_pixel
+                #Calculate pixel radius to cms radius can be used to 
+                #Eliminate anything not red and yellow rings in radius
+                scale_cm_per_pixel = KNOWN_RADIUS_RED_CM / radius_pixel
+                actual_radius_cm = radius_pixel * scale_cm_per_pixel  
+               
+                #Diameter in pixel required for distance
+                D_image_in_pixel = 2 * radius_pixel
+                #Calculate distance
+                z = (self.config['fx'] * self.config['diameter_red_cms']) / D_image_in_pixel
+                x_cm, y_cm, _ = self.convert_circle_cm(x,y,radius_pixel,scaling_factor)
+                print(f"radius {actual_radius_cm} d_image {D_image_in_pixel} x: {x_cm} height: {y_cm} distance: {z} area: {area}" )
+                #draw ring contour
+                cv2.drawContours(frame, [contour],  -1, (255, 0, 0), 2)
+                center_color = (0, 0, 0)  
+                center_radius = 3
+                #draw center black circle
+                cv2.circle(frame, (int(x), int(y)), center_radius, center_color, -1)
+                return x,y,z,area
             else:
                 None,None,None
 

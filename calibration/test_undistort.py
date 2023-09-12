@@ -17,6 +17,8 @@ if not cap.isOpened():
 
 frame_width = int(cap.get(3))
 frame_height = int(cap.get(4))
+print("frame width" , frame_width)
+print("frame height " , frame_height)
 
 output_video_path = "./data/videos/undistorted_drone_scan_360.mov"
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
