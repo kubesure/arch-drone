@@ -25,7 +25,6 @@ class ContourDector:
         self.config = config
 
     def get_color_frame(self, frame):
-
         red_lower = np.array([0, 120, 70])
         red_upper = np.array([10, 255, 255])
         yellow_lower = np.array([20, 100, 100])
