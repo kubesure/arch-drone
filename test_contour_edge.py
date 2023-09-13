@@ -13,17 +13,9 @@ while cap.isOpened():
     if not ret:
         break
 
-    ring_sequence = [
-                        [RingColor.RED,RingColor.YELLOW],
-                    ]
-    detector = contour_edge.get_xyz_rings(ring_sequence)
-    
-    if result is not None:
-        x,y,z,area = result
-        print(f"x: {x}, y: {y}, z: {z} area: {area}")
-    else:
-        #print("No suitable contour found")  
-        pass      
+    ring_sequence =  [RingColor.RED,RingColor.YELLOW,RingColor.RED,RingColor.YELLOW],               
+    result = contour_edge.get_xyz_rings(ring_sequence)
+    pass      
             
     cv2.imshow("Hoops", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):

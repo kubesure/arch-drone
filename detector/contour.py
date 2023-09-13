@@ -19,7 +19,6 @@ def is_our_hoop(contour, hoop_inner_diameter):
     return False
 
 
-
 class ContourDector:
     def __init__(self, config):
         self.config = config
