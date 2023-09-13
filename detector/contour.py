@@ -1,24 +1,6 @@
 import cv2
 import numpy as np
 
-def pixel_cm_ratio(contour):
-    pass
-
-def is_our_hoop(contour, hoop_inner_diameter):
-    (x, y), radius = cv2.minEnclosingCircle(contour)
-   
-    diameter_pixels = radius * 2
-    pixel_to_cm_ratio = hoop_inner_diameter / diameter_pixels
-    diameter_cm = diameter_pixels * pixel_to_cm_ratio
-
-    tolerance = 2
-
-    if (hoop_inner_diameter - tolerance) <= diameter_cm <= (hoop_inner_diameter + tolerance):
-        return True
-
-    return False
-
-
 class ContourDector:
     def __init__(self, config):
         self.config = config
