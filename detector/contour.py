@@ -22,5 +22,11 @@ class ContourDector:
 
         contours_red, _ = cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         contours_yellow, _ = cv2.findContours(yellow_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        return contours_red,contours_yellow
+        
+        height_red, width_red = red_mask.shape
+        height_yellow, width_yellow = yellow_mask.shape
+
+        image_red = np.zeros((height_red, width_red, 3), dtype=np.uint8)
+        image_yellow = np.zeros((height_yellow, width_yellow, 3), dtype=np.uint8)
+        return image_red,image_yellow
 

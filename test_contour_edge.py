@@ -9,8 +9,8 @@ while cap.isOpened():
     if not ret:
         break
 
-    ring_sequence =  [RingColor.RED,RingColor.YELLOW,RingColor.RED,RingColor.YELLOW],               
-    rings = contour_edge.get_xyz_rings(ring_sequence)            
+    ring_sequence =  [RingColor.RED,RingColor.YELLOW]             
+    rings = contour_edge.get_xyz_rings(frame,ring_sequence)            
 
     cv2.imshow("Hoops", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
