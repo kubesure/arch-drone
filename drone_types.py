@@ -11,4 +11,5 @@ class Ring:
     height: int
     x: int
     distance: int
+    area: int
     color: RingColor
