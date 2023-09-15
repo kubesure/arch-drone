@@ -19,18 +19,18 @@ def get_xyz_rings(frame,rings_sequence):
     edge_detector = edge.EdgeDector(config)
     cords = []
     for ring in rings_sequence:
-        red, yellow = contour_detector.get_color_frame(frame)  
+        ring_data = contour_detector.get_colored_rings(frame)  
      
         if ring == RingColor.RED:
-            red_cords = edge_detector.get_x_y_z(red)
-            red_ring = get_ring_cords(red_cords)
-            if get_ring_cords(red_cords) is not None:
+            red_cords = edge_detector.get_x_y_z(ring_data.red_mask)
+            red_ring = get_ring_cords(red_cords,RingColor.RED)
+            if red_ring is not None:
                 cords.append(red_ring)
 
         if ring == RingColor.YELLOW:
-            yellow_cords = edge_detector.get_x_y_z(yellow)   
-            yellow_ring = get_ring_cords(yellow_cords)
-            if get_ring_cords(red_cords) is not None:
+            yellow_cords = edge_detector.get_x_y_z(ring_data.yellow_mask)   
+            yellow_ring = get_ring_cords(yellow_cords,RingColor.YELLOW)
+            if yellow_ring is not None:
                 cords.append(yellow_ring)
     return cords
     
