@@ -27,8 +27,8 @@ while cap.isOpened():
     cv2.drawContours(ring_data.red_mask, ring_data.red_contour, -1, (0, 255, 0), 2)
     cv2.drawContours(ring_data.yellow_mask, ring_data.yellow_contour, -1, (0, 255, 0), 2)
 
-    cv2.imshow("red Hoops", ring_data.red_mask)
-    #cv2.imshow("yellow Hoops", ring_data.yellow_mask)
+    #cv2.imshow("red Hoops", ring_data.red_mask)
+    cv2.imshow("yellow Hoops", ring_data.yellow_mask)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
