@@ -1,7 +1,7 @@
 from drone_types import Ring,RingColor
 #from drone_types import Ring
 import config_loader
-from detector import contour
+from detector import contour_v1
 from detector import edge
 
 def get_ring_cords(cords,RingColor):
@@ -15,7 +15,7 @@ def get_ring_cords(cords,RingColor):
 def get_xyz_rings(frame,rings_sequence):
  
     config = config_loader.get_configurations()
-    contour_detector = contour.ContourDector(config)
+    contour_detector = contour_v1.ContourDector(config)
     edge_detector = edge.EdgeDector(config)
     cords = []
     for ring in rings_sequence:

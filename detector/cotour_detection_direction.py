@@ -16,7 +16,7 @@ startCounter = 0
 
 # CONNECT TO TELLO
 me = Tello()
-me.connect()
+#me.connect()
 
 # Direction & Speed Settings
 me.for_back_velocity = 0
@@ -153,9 +153,9 @@ while True:
     #img = cv2.resize(myFrame, (width, height))
     
     #GET THE IMAGE FROM WEBCAM
-    #_, img = cap.read()
+    _, img = cap.read()
     
-    img = cv2.imread('./data/images/rings/rings2.jpeg');
+    #img = cv2.imread('./data/images/rings/rings2.jpeg');
     imgContour = img.copy()
     imgHsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
@@ -184,7 +184,7 @@ while True:
     display(imgContour)
 
     #Give Direction to tello for flight control
-    instruct_tello()
+    #instruct_tello()
 
     #Set 0.5 to resize image in frame
     stack = stackImages(0.5, ([img, result], [imgDil, imgContour]))

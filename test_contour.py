@@ -1,6 +1,6 @@
 import cv2
 import config_loader
-from detector import contour
+from detector import contour_v1
 import numpy as np 
 import matplotlib.pyplot as plt
 
@@ -21,7 +21,7 @@ while cap.isOpened():
     if not ret:
         break
 
-    detector = contour.ContourDector(config_loader.get_configurations())
+    detector = contour_v1.ContourDector(config_loader.get_configurations())
     ring_data = detector.get_colored_rings(frame)    
 
     cv2.drawContours(ring_data.red_mask, ring_data.red_contour, -1, (0, 255, 0), 2)
