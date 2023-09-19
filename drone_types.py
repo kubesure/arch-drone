@@ -2,18 +2,28 @@ from enum import Enum
 from dataclasses import dataclass
 import numpy as np
 
+
 class RingColor(Enum):
     YELLOW = 1
     RED = 2
     NONE = 3
 
+
+class Direction(Enum):
+    UP = 1
+    DOWN = 2
+    RIGHT = 3
+    LEFT = 4    
+
+
 @dataclass
 class Ring:
-    height: int
+    y: int
     x: int
-    distance: int
+    z: int
     area: int
     color: RingColor
+
 
 @dataclass
 class RingDataContour:

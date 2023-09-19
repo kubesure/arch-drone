@@ -1,50 +1,37 @@
 from djitellopy import Tello
-import config_loader 
-from time import sleep
+import config_loader
 import plotter
-#import navigator
-from drone_types import RingColor 
-  
+from navigator import simple
+from drone_types import RingColor, Direction
+
+
 def process_video(drone,ring_sequence):
     drone.streamoff()
     drone.streamon()
-    #drone.takeoff()
-    #drone.move_up(150)
     plotter.plot(drone,ring_sequence)
 
-def drone_takeoff_n_detect(drone,config):
-    drone.move_up(config['red_optimum_hover_ht'])
-    hover = True
-    time = 20
-    drone.streamoff()
-    drone.streamon()
-    drone.takeoff()
-    drone.move_up(150)
 
-    while hover:
-        sleep(1)
-        time = time + 1
-        if time == 20:
-            hover = False
-
-    
+# TODO add exception handling
 if __name__ == '__main__':
+    ring_sequence = [RingColor.YELLOW, RingColor.RED]
     config = config_loader.get_configurations()
     drone = Tello()
     drone.connect()
-   
-    ring_sequence =  [RingColor.RED,RingColor.YELLOW]
-    process_video(drone,ring_sequence)
+    drone.streamoff()
+    drone.streamon()
+    drone.takeoff()
+    navigator = simple.SimpleDroneNavigator(config)
+    tasks_done = False
+    while not tasks_done:
+        for ring in ring_sequence:
+            ring_data = navigator.hover_at(ring, Direction.UP)
+            navigator.navigate_to(ring_data)
+        tasks_done = True
+    drone.land()
 
-    '''  
-    rings = drone_takeoff_n_detect(drone,ring_sequence)
-    if len(rings) > 1:
-        task_done = False
-        while not task_done:
-            task_done = navigator.navigate(drone,rings)
-    '''        
 
-    
+
+
 
 
     
