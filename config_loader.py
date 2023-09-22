@@ -13,5 +13,8 @@ def get_configurations():
         'e2e_height_yl' : int(config['RingProperties']['e2e_height_yr']),
         'diameter_red_cms' : int(config['RingProperties']['diameter_red_cms']),
         'diameter_yellow_cms' : int(config['RingProperties']['diameter_yellow_cms']),
+        'yellow_optimum_hover_ht': int(config['RingProperties']['yellow_optimum_hover_ht']),
+        'red_optimum_hover_ht': int(config['RingProperties']['red_optimum_hover_ht']),
+
     }
     return configurations
