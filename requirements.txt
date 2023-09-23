@@ -3,3 +3,4 @@ av==10.0.0
 pillow==10.0.0
 djitellopy==2.4.0
 opencv-python==4.8.0.76
+unittest2 = 2-1.1.0

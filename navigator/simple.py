@@ -8,8 +8,8 @@ def hover_at(inn: NavigatorInput, drone: Tello, attempt):
     y_movement = 0
     y_direction = Direction.UP
     drone_height = drone.get_height()
-    red_height = inn.config['red_optimum_hover_ht']
-    yellow_height = inn.config['yellow_optimum_hover_ht']
+    red_height = int(inn.config['red_optimum_hover_ht'])
+    yellow_height = int(inn.config['yellow_optimum_hover_ht'])
 
     if inn.ring == RingColor.RED:
         print(f"red height {red_height} ")
@@ -45,7 +45,6 @@ def hover_at(inn: NavigatorInput, drone: Tello, attempt):
         print(f"attempt {attempt} executing")
         attempt_3_routine(drone)
 
-
 def hover(duration):
     hover_time = duration
     while True:
@@ -79,7 +78,7 @@ def attempt_3_routine(drone):
     hover(2)
 
 
-def navigate_to(ring_data: Ring, drone: Tello) -> (bool, DroneState):
+def navigate_to(ring_data: Ring, drone) -> (bool, DroneState):
     # drone.go_xyz_speed(ring_data.x, ring_data.y, ring_data.z, 20)
     print(f"moving forward {ring_data.z}")
     drone.move_forward(ring_data.z)
