@@ -5,6 +5,7 @@ from typing import List
 from drone_types import Ring,RingColor
 from detector import contour_edge
 import time
+from djitellopy import Tello
 
 
 def vid_writer(width, height):
@@ -15,43 +16,33 @@ def vid_writer(width, height):
     return out_writer
 
 
-def plot(write_vid, detect: bool, duration, ring):
-    drone_video_url = 'udp://@0.0.0.0:11111'
-    cap = cv2.VideoCapture(drone_video_url)
-
+def plot(write_vid, detect: bool, duration, ring, drone: Tello):
     rings_detected: List[Ring] = []
+    drone.streamoff()
+    drone.streamon()
+    frame_read = drone.get_frame_read()
 
-    ret, frame = cap.read()
-    if not ret:
-        print("Error: Couldn't read a frame from video.")
-        return
-    height, width, _ = frame.shape
+    height, width, _ = frame_read.frame.shape
     out_writer: VideoWriter
-
     if write_vid:
         out_writer = vid_writer(width, height)
+
     start_time = time.time()
-
     while int(time.time() - start_time) < duration:
-        ret, frame = cap.read()
+        frame = frame_read.frame
 
-        if not ret:
-            break
         if detect:
             r = contour_edge.get_xyz_area(frame, ring)
             rings_detected.append(r)
         if write_vid:
             out_writer.write(frame)
 
-    cap.release()
     if write_vid:
         out_writer.release()
+    drone.streamoff()
     return rings_detected
 
 
 def mock_plot(write_vid, detect: bool, duration, ring):
     rings_detected: List[Ring] = [Ring(x=34, y=45, z=150, area=0, color=ring)]
     return rings_detected
-
-if __name__ == '__main__':
-    plot(True, True, 10, RingColor.RED)
