@@ -1,77 +1,81 @@
 import config_loader
 from djitellopy import Tello
 from navigator import simple
-from drone_types import RingColor, DroneState, Ring, NavigatorInput
+from drone_types import RingColor, Ring, NavigatorInput
 from threading import Thread
 import queue
 from typing import List
 import plotter
-from mocktello import MockTello
 
 
 def ring_detected(r: Ring) -> (bool, Ring):
     if r.z == 0 or r.y == 0 or r.y == 0:
         return False, Ring
-    return True, ring
+    return True, r
+
+
+def get_last_detected(rings) -> (bool, Ring):
+    if len(rings) == 0:
+        return False, None
+    elif not ring_detected(rings[len(rings)]):
+        return False, None
+    return True, rings[len(rings)]
+
+
+def find_best(rings) -> (bool, Ring):
+    best_ring = Ring
+    for r in rings:
+        best_ring = Ring(x=34, y=45, z=150, area=0, color=r.ring)
+    return True, best_ring
 
 
 def hover_and_detect_best(inn: NavigatorInput, dronee) -> (bool, Ring):
-    attempts = 3
+    attempts = 1
     is_detected = False
     rings_detected: List[Ring] = []
     while not is_detected:
         drone_hover = Thread(target=simple.hover_at, args=(inn, dronee, attempts))
         drone_hover.start()
         # detect and return ring
-        rings = plotter.plot(False, True, inn.duration, inn.ring)
-        # rings = plotter.mock_plot(False, True, 10, inn.ring)
-        # detect and return ring
+        rings = plotter.plot(True, True, inn.duration, inn.ring, dronee)
+        rings_detected.append(rings)
+        # detect
         drone_hover.join()
         if attempts != 0:
-            attempts = attempts - 1
+            attempts = attempts + 1
             rings_detected.append(rings)
-        else:
+        elif attempts == 3:
+            rings_detected.append(rings)
             break
-        # find best ring code not complete
-    return True, Ring(x=34, y=45, z=150, area=0, color=inn.ring)
+    return find_best(rings_detected)
 
 
-def hover_and_detect(inn: NavigatorInput, dronee) -> (bool, Ring):
+def hover_and_detect_last_one(inn: NavigatorInput, dronee) -> (bool, Ring):
     attempts = 1
     is_detected = False
-    r: Ring
     while not is_detected:
         drone_hover = Thread(target=simple.hover_at, args=(inn, dronee, attempts))
         drone_hover.start()
         # detect and return ring
-        if attempts < 4:
-            r = Ring(x=0, y=0, z=0, area=0, color=inn.ring)
-        else:
-            r = Ring(x=34, y=45, z=150, area=0, color=inn.ring)
+        rings = plotter.plot(True, True, inn.duration, inn.ring, dronee)
         # # detect and return ring
         drone_hover.join()
-        if not ring_detected(r) and attempts < 4:
-            is_detected = False
+        if not get_last_detected(rings) and attempts < 4:
+            attempts = attempts + 1
         else:
-            is_detected = True
-            return is_detected, r
+            is_detected, get_last_detected(rings)
 
 
 # TODO add exception handling
 if __name__ == '__main__':
     ring_sequence = [RingColor.YELLOW, RingColor.RED, RingColor.YELLOW, RingColor.RED]
     config = config_loader.get_configurations()
-    # drone = MockTello()
     drone = Tello()
-    drone.get_frame_read()
     drone.connect()
-    if drone.get_battery() < 20:
+    if drone.get_battery() < 0:
         print(f"battery not charged enough")
     else:
-        drone.streamoff()
-        drone.streamon()
         drone.takeoff()
-        drone_state = DroneState
         q = queue.Queue()
         for ring in ring_sequence:
             hover_input = NavigatorInput(ring=ring,

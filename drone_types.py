@@ -43,7 +43,6 @@ class DroneState:
 @dataclass
 class NavigatorInput:
     ring: RingColor
-    #direction: Direction
     config: Dict[str, Union[float, int]]
     q: queue.Queue
     duration: int

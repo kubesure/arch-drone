@@ -79,7 +79,6 @@ def attempt_3_routine(drone):
 
 
 def navigate_to(ring_data: Ring, drone) -> (bool, DroneState):
-    # drone.go_xyz_speed(ring_data.x, ring_data.y, ring_data.z, 20)
     print(f"moving forward {ring_data.z}")
     drone.move_forward(ring_data.z)
     return True, DroneState(last_ring_passed=ring_data)
