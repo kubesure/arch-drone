@@ -59,7 +59,8 @@ def plot(write_vid, detect: bool, duration, ring, drone: Tello):
         frame = video_reader.get_frame()
 
         if detect:
-            r = contour_edge.get_xyz_area(frame, ring)
+            r, detected_frame = contour_edge.get_xyz_area(frame, ring)
+            frame = detected_frame
             rings_detected.append(r)
         if write_vid:
             out_writer.write(frame)

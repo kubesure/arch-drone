@@ -24,7 +24,8 @@ class Direction(Enum):
     UP = 1
     DOWN = 2
     RIGHT = 3
-    LEFT = 4    
+    LEFT = 4
+    HOVER = 5
 
 
 @dataclass

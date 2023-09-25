@@ -4,7 +4,7 @@ from time import sleep
 
 
 def hover_at(inn: NavigatorInput, drone: Tello, attempt):
-    print(f"attempt {attempt} on ring {inn.ring}")
+    print(f"attempt {attempt} on ring {inn.ring} with duration {inn.duration}")
     y_movement = 0
     y_direction = Direction.UP
     drone_height = drone.get_height()
@@ -12,20 +12,26 @@ def hover_at(inn: NavigatorInput, drone: Tello, attempt):
     yellow_height = int(inn.config['yellow_optimum_hover_ht'])
 
     if inn.ring == RingColor.RED:
-        print(f"red height {red_height} ")
+        print(f" red height {yellow_height} drone height {drone_height}")
+        y_movement = red_height
         if drone_height > red_height:
             y_direction = Direction.DOWN
+            y_movement = abs(drone_height - red_height)
         elif drone_height < red_height:
             y_direction = Direction.UP
-        y_movement = abs(drone_height - red_height)
+            y_movement = abs(drone_height - red_height)
         print(f"y_direction {y_direction} y_movement {y_movement} ring {inn.ring}")
     elif inn.ring == RingColor.YELLOW:
-        print(f" yellow height {yellow_height}")
+        print(f" yellow height {yellow_height} drone height {drone_height}")
+        y_movement = yellow_height
         if drone_height > yellow_height:
             y_direction = Direction.DOWN
+            y_movement = abs(drone_height - yellow_height)
         elif drone_height < yellow_height:
             y_direction = Direction.UP
-        y_movement = abs(drone_height - yellow_height)
+            y_movement = abs(drone_height - yellow_height)
+        elif drone_height == yellow_height:
+            y_direction = Direction.HOVER
         print(f"y_direction {y_direction} y_movement {y_movement} ring {inn.ring}")
 
     if y_direction == Direction.UP:
@@ -34,6 +40,8 @@ def hover_at(inn: NavigatorInput, drone: Tello, attempt):
     elif y_direction == Direction.DOWN:
         print(f"moving down {y_movement} ring {inn.ring}")
         drone.move_down(y_movement)
+    elif y_direction == Direction.HOVER:
+        print(f"direction hover")
 
     if attempt == 1:
         print(f"attempt {attempt} executing")
