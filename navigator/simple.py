@@ -1,6 +1,8 @@
 from drone_types import Direction, RingColor, Ring, DroneState, NavigatorInput
 from djitellopy import Tello
 from time import sleep
+from pid import PIDController
+import time
 
 
 def hover_at(inn: NavigatorInput, drone: Tello, attempt):
@@ -93,4 +95,38 @@ def attempt_3_routine(drone):
 def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello) -> (bool, DroneState):
     print(f"moving forward {ring.z} at speed {drone.get_speed_z()}")
     drone.go_xyz_speed(ring.x, ring.y, ring.z, int(inn.config['speed']))
+    return True, DroneState(last_ring_passed=ring)
+
+
+def navigate_n_correct_to(inn: NavigatorInput, ring: Ring, drone: Tello):
+    forward_speed = int(inn.config['speed'])
+
+    pid_x = PIDController(0, 0, 1)
+    pid_y = PIDController(0, 0, 1)
+
+    while True:
+
+        # get current x y from detection
+        set_ring = Ring(x=34, y=90, z=350, area=4500, color=RingColor.YELLOW)
+        new_ring = Ring(x=34, y=90, z=350, area=4500, color=RingColor.YELLOW)
+
+        # Calculate PID outputs for x and y
+        set_point_x = set_ring.x
+        set_point_y = set_ring.y
+
+        current_x = new_ring.x
+        current_y = new_ring.y
+
+        output_x = pid_x.compute(set_point_x, current_x)
+        output_y = pid_y.compute(set_point_y, current_y)
+
+        final_x_velocity = output_x
+        final_y_velocity = output_y
+        final_forward_velocity = forward_speed
+        drone.send_rc_control(final_x_velocity, final_forward_velocity, final_y_velocity, 0)
+
+        time.sleep(1)
+        # TODO break logic to be defined
+        if 1 == 1:
+            break
     return True, DroneState(last_ring_passed=ring)
