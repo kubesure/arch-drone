@@ -6,6 +6,7 @@ from threading import Thread
 import queue
 from typing import List
 import plotter
+from navigator import utils
 
 
 def hover_and_detect_best(inn: NavigatorInput, dronee) -> (bool, Ring):
@@ -26,8 +27,7 @@ def hover_and_detect_best(inn: NavigatorInput, dronee) -> (bool, Ring):
         elif attempts == 3:
             rings_detected.append(rings)
             break
-    return find_best(rings_detected)
-
+    return utils.get_short_or_longest_distance(rings_detected, True)
 
 
 def hover_and_detect_last_one(inn: NavigatorInput, dronee) -> (bool, Ring):
@@ -44,7 +44,7 @@ def hover_and_detect_last_one(inn: NavigatorInput, dronee) -> (bool, Ring):
         drone_hover.join()
         if attempts == 1:
             break
-    return get_last_detected(rings_detected)
+    return utils.get_avg_distance(rings_detected)
 
 
 # TODO add exception handling
@@ -65,11 +65,11 @@ if __name__ == '__main__':
                 hover_input = NavigatorInput(ring=ring,
                                              config=config,
                                              q=q,
-                                             duration=10)
+                                             duration=8)
                 detected, ring_data = hover_and_detect_last_one(hover_input, drone)
                 if detected:
                     print(f"ring detected {detected} x: {ring_data.x} y {ring_data.y} z{ring_data.z}")
-                    simple.navigate_to(ring_data, drone)
+                    simple.navigate_to(hover_input, ring_data, drone)
             drone.land()
             drone.streamoff()
     except Exception as e:

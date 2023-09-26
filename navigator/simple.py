@@ -5,12 +5,26 @@ from time import sleep
 
 def hover_at(inn: NavigatorInput, drone: Tello, attempt):
     print(f"attempt {attempt} on ring {inn.ring} with duration {inn.duration}")
+
+    hover_at_optimum_height(drone, inn)
+
+    if attempt == 1:
+        print(f"attempt {attempt} executing scan")
+        hover(inn.duration)
+    elif attempt == 2:
+        print(f"attempt {attempt} executing scan")
+        attempt_2_routine(drone)
+    elif attempt == 3:
+        print(f"attempt {attempt} executing scan")
+        attempt_3_routine(drone)
+
+
+def hover_at_optimum_height(drone, inn):
     y_movement = 0
     y_direction = Direction.UP
     drone_height = drone.get_height()
     red_height = int(inn.config['red_optimum_hover_ht'])
     yellow_height = int(inn.config['yellow_optimum_hover_ht'])
-
     if inn.ring == RingColor.RED:
         print(f" red height {yellow_height} drone height {drone_height}")
         y_movement = red_height
@@ -33,7 +47,6 @@ def hover_at(inn: NavigatorInput, drone: Tello, attempt):
         elif drone_height == yellow_height:
             y_direction = Direction.HOVER
         print(f"y_direction {y_direction} y_movement {y_movement} ring {inn.ring}")
-
     if y_direction == Direction.UP:
         drone.move_up(y_movement)
         print(f"moving up {y_movement} ring {inn.ring}")
@@ -43,15 +56,6 @@ def hover_at(inn: NavigatorInput, drone: Tello, attempt):
     elif y_direction == Direction.HOVER:
         print(f"direction hover")
 
-    if attempt == 1:
-        print(f"attempt {attempt} executing")
-        hover(inn.duration)
-    elif attempt == 2:
-        print(f"attempt {attempt} executing")
-        attempt_2_routine(drone)
-    elif attempt == 3:
-        print(f"attempt {attempt} executing")
-        attempt_3_routine(drone)
 
 def hover(duration):
     hover_time = duration
@@ -65,11 +69,11 @@ def hover(duration):
 def attempt_2_routine(drone):
     drone.move_forward(30)
     hover(2)
-    drone.rotate_clockwise(15)
+    drone.move_right(15)
     hover(2)
-    drone.rotate_counter_clockwise(30)
+    drone.move_left(30)
     hover(2)
-    drone.rotate_clockwise(15)
+    drone.move_right(15)
     hover(2)
 
 
@@ -86,7 +90,7 @@ def attempt_3_routine(drone):
     hover(2)
 
 
-def navigate_to(ring_data: Ring, drone) -> (bool, DroneState):
-    print(f"moving forward {ring_data.z}")
-    drone.move_forward(ring_data.z)
-    return True, DroneState(last_ring_passed=ring_data)
+def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello) -> (bool, DroneState):
+    print(f"moving forward {ring.z} at speed {drone.get_speed_z()}")
+    drone.go_xyz_speed(ring.x, ring.y, ring.z, int(inn.config['speed']))
+    return True, DroneState(last_ring_passed=ring)
