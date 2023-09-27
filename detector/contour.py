@@ -25,11 +25,11 @@ class ContourFilter:
             lower = np.array([0, 100, 70])
             # upper = np.array([10, 255, 255])
             upper = np.array([5, 255, 160])
-            known_width = 56
+            known_width = 560
         elif ring == RingColor.YELLOW:
             lower = np.array([20, 100, 100])
             upper = np.array([30, 255, 255])
-            known_width = 48
+            known_width = 480
         return lower, upper, known_width
 
     # Get the filter contour from image
@@ -96,7 +96,7 @@ class ContourFilter:
     # compute and return the distance from the maker to the camera
     def distance_to_camera(self, knownWidth, focalLenght, perceivedWidth):
         distance = ((knownWidth * focalLenght) / perceivedWidth) * 2.54
-        print(f"distance {distance}")
+        # print(f"distance {distance}")
         return distance
 
 

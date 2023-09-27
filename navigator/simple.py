@@ -93,15 +93,17 @@ def attempt_3_routine(drone):
 
 def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello) -> (bool, DroneState):
     print(f"moving forward {ring.z} at speed {drone.get_speed_z()}")
-    drone.go_xyz_speed(ring.x, ring.y, ring.z, 50)
+    #drone.go_xyz_speed(ring.x, ring.y, ring.z, 50)
+    #drone.set_speed(20)
+    drone.move_forward(ring.z + 10)
     return True, DroneState(last_ring_passed=ring)
 
 
 def navigate_n_correct_to(inn: NavigatorInput, ring: Ring, drone: Tello):
     forward_speed = int(inn.config['speed'])
 
-    pid_x = PIDController(0, 0, 1)
-    pid_y = PIDController(0, 0, 1)
+    pid_x = navigator.PIDController(0, 0, 1)
+    pid_y = navigator.PIDController(0, 0, 1)
 
     while True:
 
