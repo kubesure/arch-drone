@@ -15,6 +15,7 @@ def get_configurations():
         'diameter_yellow_cms' : int(config['RingProperties']['diameter_yellow_cms']),
         'yellow_optimum_hover_ht': int(config['RingProperties']['yellow_optimum_hover_ht']),
         'red_optimum_hover_ht': int(config['RingProperties']['red_optimum_hover_ht']),
+        'speed': int(config['DroneProperties']['speed']),
 
     }
     return configurations

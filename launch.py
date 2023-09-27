@@ -38,8 +38,9 @@ def hover_and_detect_last_one(inn: NavigatorInput, dronee) -> (bool, Ring):
         drone_hover = Thread(target=simple.hover_at, args=(inn, dronee, attempts))
         drone_hover.start()
         # detect and return ring
-        rings = plotter.plot(True, True, inn.duration, inn.ring, dronee)
-        rings_detected.append(rings)
+        rings_detected = plotter.plot(True, True, inn.duration, inn.ring, dronee)
+        print(f"Ring append to ring_d{rings_detected}")
+        # rings_detected.append(rings)
         # # detect and return ring
         drone_hover.join()
         if attempts == 1:
@@ -52,7 +53,7 @@ if __name__ == '__main__':
     drone = Tello()
     flying = False
     try:
-        ring_sequence = [RingColor.RED]
+        ring_sequence = [RingColor.YELLOW]
         config = config_loader.get_configurations()
         drone.connect()
         if drone.get_battery() < 2.5:

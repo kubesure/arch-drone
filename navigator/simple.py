@@ -1,7 +1,6 @@
 from drone_types import Direction, RingColor, Ring, DroneState, NavigatorInput
 from djitellopy import Tello
 from time import sleep
-from pid import PIDController
 import time
 
 
@@ -94,7 +93,7 @@ def attempt_3_routine(drone):
 
 def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello) -> (bool, DroneState):
     print(f"moving forward {ring.z} at speed {drone.get_speed_z()}")
-    drone.go_xyz_speed(ring.x, ring.y, ring.z, int(inn.config['speed']))
+    drone.go_xyz_speed(ring.x, ring.y, ring.z, 50)
     return True, DroneState(last_ring_passed=ring)
 
 

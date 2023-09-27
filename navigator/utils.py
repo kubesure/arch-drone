@@ -24,6 +24,7 @@ def get_short_or_longest_distance(rings, longest) -> (bool, Ring):
 
 
 def get_avg_distance(rings) -> (bool, Ring):
+    print(f"Ring for average {len(rings)}")
     rings_to_consider = get_percentage_rings(rings, .50)
 
     print(f"total rings {len(rings)} rings considered for avg {len(rings_to_consider)}")
@@ -35,7 +36,8 @@ def get_avg_distance(rings) -> (bool, Ring):
     color_counts = Counter(ring.color for ring in rings_to_consider)
     avg_color = color_counts.most_common(1)[0][0]
     average_ring = Ring(x=avg_x, y=avg_y, z=avg_z, area=avg_area, color=avg_color)
-    return average_ring
+    print(f"Returning avg ring {average_ring}")
+    return True, average_ring
 
 
 def get_percentage_rings(rings, percent_to_discard):
