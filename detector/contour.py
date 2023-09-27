@@ -24,11 +24,11 @@ class ContourFilter:
             lower = np.array([0, 100, 70])
             #upper = np.array([10, 255, 255])
             upper = np.array([5, 255, 160])
-            known_width = 56
+            known_width = 560 #(in mm) #56(in cm)
         elif ring_color == 'YELLOW':
             lower = np.array([20, 100, 100])
             upper = np.array([30, 255, 255])
-            known_width = 48
+            known_width = 480 #(in mm) #48(cm)
         return lower,upper,known_width
 
 
@@ -36,8 +36,8 @@ class ContourFilter:
     def get_xyz_ring(self,img,ringColor):
 
         closure_curve = True
-        #FOCAL_LENGTH =  1987.7588924985816
-        FOCAL_LENGTH =  41.36695970020233
+        #FOCAL_LENGTH =   1987.7588924985816 #(in mm) #198.7758892
+        FOCAL_LENGTH =  42 #41.36695970020233
 
         imgOrg = img.copy()
         
@@ -66,10 +66,8 @@ class ContourFilter:
             areaMin = 0
             
             if ringColor == 'RED':
-                print("Ring color & area detect: ",ringColor, area)
-                areaMin = 3500
+                areaMin = 2500
             elif ringColor == 'YELLOW':
-                print("Ring color & area detect: ",ringColor, area)
                 areaMin = 1500
 
             peri = cv2.arcLength(cnt, closure_curve)
@@ -77,16 +75,15 @@ class ContourFilter:
 
             print("Ring Area, AreaMin, length: ", area, areaMin, len(approx))
             if area > areaMin and len(approx) > 4: 
-                
-                print("Approx length of circle: ",len(approx))
-                
+            
                 x , y , w, h = cv2.boundingRect(approx)
                 center_x = int(x + (w / 2))  # CENTER X OF THE OBJECT
                 center_y = int(y + (h / 2))  # CENTER y OF THE OBJECT
                 distance = self.distance_to_camera(known_width, FOCAL_LENGTH, w)
+                print (x,y,w,h)
                 print("Approx center of X: ",center_x)
-                print("Approx center of X:",center_y)
-                print("Approx center of X:",distance)
+                print("Approx center of Y:",center_y)
+                print("Distance: ",distance)
 
                 
                 if (center_x <int(self.frameWidth/2)-self.boundry):
@@ -106,7 +103,6 @@ class ContourFilter:
                 #    cv2.rectangle(img,(int(self.frameWidth/2-self.boundry),int(self.frameHeight/2)+self.boundry),(int(self.frameWidth/2+self.boundry),self.frameHeight),(0,0,255),cv2.FILLED)
                     dir = 4
                 else: dir=0
-
                 #cv2.line(img, (int(frameWidth/2),int(frameHeight/2)), (center_x,center_y),(0, 0, 255), 3)
                 #cv2.circle(img, (int(frameWidth/2),int(frameHeight/2)), (center_x,center_y),(0, 0, 255), 3)
                 cv2.circle(img, (int(center_x), int(center_y)), 3, (0, 0, 0), -1)
@@ -120,17 +116,17 @@ class ContourFilter:
 
     def distance_to_camera(self, knownWidth, focalLenght, perceivedWidth):
         # compute and return the distance from the maker to the camera
-        return (knownWidth * focalLenght) / perceivedWidth
+        return ((knownWidth * focalLenght) / perceivedWidth) * 2.54
 
-cap = cv2.VideoCapture('./data/videos/scan_2_rings_linear_1.mov')
+cap = cv2.VideoCapture('./data/videos/test_run_20230925_191002.mp4')
 cl = ContourFilter()
 
 while True:
 
-    ring_color = 'RED'
+    ring_color = 'YELLOW'
     _, img = cap.read()
  
-    center_x,center_y,dis,output_img = cl.get_xyz_ring(img,'RED')
+    center_x,center_y,dis,output_img = cl.get_xyz_ring(img,ring_color)
     print(center_x,center_y,dis)
 
     cv2.imshow("Test",output_img);
