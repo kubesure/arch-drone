@@ -1,6 +1,6 @@
 import unittest
 from drone_types import Ring, RingColor
-from navigator import utils
+import utils
 
 
 class MyTestCase(unittest.TestCase):

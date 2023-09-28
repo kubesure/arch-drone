@@ -7,11 +7,10 @@ cl = contour.ContourFilter()
 
 while True:
     _, img = cap.read()
-    r,frame = cl.get_xyz_ring(img, RingColor.YELLOW)
+    r, frame = cl.get_xyz_ring(img, RingColor.YELLOW)
     print(r.x, r.y, r.z)
     cv2.imshow("Test", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-
 
 cv2.destroyAllWindows()

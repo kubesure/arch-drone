@@ -1,9 +1,10 @@
 import cv2
 
-#eliminate small contours
-def filter(contour,size):
+
+# eliminate small contours
+def filter(contour, size):
     area = cv2.contourArea(contour)
 
-    if area > size: 
+    if area > size:
         return contour
-    return None  
+    return None

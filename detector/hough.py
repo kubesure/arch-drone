@@ -7,7 +7,7 @@ while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
         break
-    
+
     # Convert to HSV and apply color mask
     grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 

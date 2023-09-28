@@ -1,7 +1,7 @@
 from PIL import Image
 import os
 
-image_folder = "./data/images/rings/"
+image_folder = "../data/images/rings/"
 
 for filename in os.listdir(image_folder):
     if filename.endswith(".jpeg"):

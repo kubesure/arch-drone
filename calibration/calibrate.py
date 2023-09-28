@@ -11,8 +11,8 @@ pattern_size = (7, 7)
 objp = np.zeros((pattern_size[0] * pattern_size[1], 3), np.float32)
 objp[:, :2] = np.mgrid[0:pattern_size[0], 0:pattern_size[1]].T.reshape(-1, 2)
 
-obj_points = [] 
-img_points = []  
+obj_points = []
+img_points = []
 
 import os
 
@@ -25,17 +25,17 @@ for filename in os.listdir(image_folder):
         gray = cv2.GaussianBlur(gray, (5, 5), 0)
 
         ret, corners = cv2.findChessboardCorners(
-                gray, pattern_size, cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_NORMALIZE_IMAGE
+            gray, pattern_size, cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_NORMALIZE_IMAGE
         )
 
         if ret:
             obj_points.append(objp)
             img_points.append(corners)
             print(f"Detected {len(corners)} corners in {filename}")
-            
+
             img_with_corners = cv2.drawChessboardCorners(img, pattern_size, corners, ret)
-            #cv2.imshow('Corners', img_with_corners)
-            #cv2.waitKey(0)
+            # cv2.imshow('Corners', img_with_corners)
+            # cv2.waitKey(0)
         else:
             print(f"No corners detected in {filename}")
 cv2.destroyAllWindows()
