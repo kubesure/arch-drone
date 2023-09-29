@@ -38,6 +38,9 @@ class RingDataContour:
 
 @dataclass
 class DroneState:
+    current_x: int
+    current_y: int
+    current_z: int
     last_ring_passed: Ring
 
 
@@ -47,3 +50,11 @@ class NavigatorInput:
     config: Dict[str, Union[float, int]]
     q: queue.Queue
     duration: int
+
+
+class DroneErrorCode(Enum):
+    InternalError = 1
+    TakeOffError = 2
+    HoverError = 3
+    MoveForwardError = 4
+

@@ -1,45 +1,9 @@
-import cv2
-from datetime import datetime
-from cv2 import VideoWriter
 from typing import List
 from drone_types import Ring
 from detector import contour
 import time
 from djitellopy import Tello
-from navigator import utils
-
-
-class Cv2CapReader:
-    def __init__(self):
-        drone_video_url = 'udp://@0.0.0.0:11111'
-        self.cap = cv2.VideoCapture(drone_video_url)
-
-    def get_frame(self):
-        ret, frame = self.cap.read()
-        if not ret:
-            print("Error: Couldn't read a frame from video.")
-            return None
-        return frame
-
-
-class DJIFrameRead:
-    def __init__(self, drone):
-        self.frame_read = drone.get_frame_read()
-
-    def get_frame(self):
-        ret, frame = self.frame_read.frame
-        if not ret:
-            print("Error: Couldn't read a frame from video.")
-            return None
-        return frame
-
-
-def vid_writer(width, height):
-    current_time_str = datetime.now().strftime('%Y%m%d_%H%M%S')
-    output_video_path = f"./data/videos/test_run_{current_time_str}.mp4"
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out_writer = cv2.VideoWriter(output_video_path, fourcc, 30, (width, height))
-    return out_writer
+import utils
 
 
 def plot(write_vid, detect: bool, duration, ring, drone: Tello):
@@ -47,13 +11,7 @@ def plot(write_vid, detect: bool, duration, ring, drone: Tello):
     drone.streamoff()
     drone.streamon()
 
-    video_reader = Cv2CapReader()
-    frame = video_reader.get_frame()
-
-    out_writer: VideoWriter
-    if write_vid:
-        height, width, _ = frame.shape
-        out_writer = vid_writer(width, height)
+    out_writer, video_reader = utils.get_out_writer(write_vid)
 
     detector = contour.ContourFilter()
     start_time = time.time()
