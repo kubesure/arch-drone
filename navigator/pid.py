@@ -22,22 +22,20 @@ class PIDController:
         return output
 
 
-def navigate_n_correct_to(inn: NavigatorInput, ring: Ring, drone: Tello):
+def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello):
     forward_speed = int(inn.config['speed'])
 
     pid_x = PIDController(0, 0, 1)
     pid_y = PIDController(0, 0, 1)
 
     while True:
-
         # get current x y from detection
-        set_ring = Ring(x=34, y=90, z=350, area=4500, color=RingColor.YELLOW)
-        new_ring = Ring(x=34, y=90, z=350, area=4500, color=RingColor.YELLOW)
+        current_ring = ring
         rings = plotter.plot(True, True, inn.duration, inn.ring, drone)
         new_ring = utils.get_avg_distance(rings)
 
-        set_point_x = set_ring.x
-        set_point_y = set_ring.y
+        set_point_x = current_ring.x
+        set_point_y = current_ring.y
 
         current_x = new_ring.x
         current_y = new_ring.y

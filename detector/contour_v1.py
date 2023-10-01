@@ -36,10 +36,10 @@ class ContourDector:
         ##Write filter logic for red and yellow circles 
 
         for contour in contours_red:
-            result_red = common.filter(contour, 600)
+            result_red = common.filter_contour(contour, 600)
 
         for contour in contours_yellow:
-            result_yellow = common.filter(contour, 600)
+            result_yellow = common.filter_contour(contour, 600)
 
         ring_data = RingDataContour
 

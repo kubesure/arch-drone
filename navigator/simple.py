@@ -1,6 +1,8 @@
 from drone_types import Direction, RingColor, Ring, NavigatorInput
 from djitellopy import Tello
 from time import sleep
+import plotter
+import utils
 
 
 def hover_at(inn: NavigatorInput, drone: Tello, attempt):
@@ -95,5 +97,25 @@ def attempt_3_routine(drone):
 def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello) -> bool:
     print(f"moving forward {ring.z}")
     drone.set_speed(int(inn.config['speed']))
-    drone.move_forward(ring.z + 10)
+    distance_to_travel = ring.z + 20
+    distance_travelled = 0
+    incremental_distance = round(abs(distance_to_travel / 4))
+
+    while distance_to_travel != distance_travelled:
+        drone.move_forward(incremental_distance)
+        distance_travelled = distance_travelled + incremental_distance
+        hover_at_optimum_height(drone, inn)
+        direction, x = correct_x(inn, drone)
+        if x > 0 and direction == Direction.LEFT:
+            drone.move_right(x)
+        if x > 0 and direction == Direction.LEFT:
+            drone.move_left(x)
+
     return True
+
+
+# calculate x with new detection and determine corrected x
+def correct_x(inn: NavigatorInput, drone) -> (Direction, int):
+    rings_detected = plotter.plot(False, True, inn.duration, inn.ring, drone)
+    current_ring = utils.get_avg_distance(rings_detected)
+    pass
