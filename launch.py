@@ -48,18 +48,19 @@ def hover_and_detect_avg_distance(inn: NavigatorInput, dronee) -> (bool, Ring):
 if __name__ == '__main__':
     drone = Tello()
 
-    global drone_air_bone
-
     try:
         ring_sequence = [RingColor.YELLOW, RingColor.YELLOW]
         config = config_loader.get_configurations()
         drone.connect()
+        drone.set_video_fps(drone.FPS_30)
+        drone.streamoff()
+        drone.streamon()
         if drone.get_battery() < 2.5:
             print(f"battery not charged enough")
             drone.end()
         else:
-            is_air_bone = drone.takeoff()
-            if not drone_air_bone:
+            drone.takeoff()
+            if not drone.is_flying:
                 raise DroneException("Take off error", DroneErrorCode.TakeOffError)
             q = queue.Queue()
             for ring in ring_sequence:
@@ -78,13 +79,12 @@ if __name__ == '__main__':
                     simple.navigate_to(hover_input, ring_data, drone)
                     done_q.put(True)
                     drone_move_vid.join()
-            drone.land()
-            drone.streamoff()
+            drone.end()
     except DroneException as de:
-        utils.drone_land_sequence(drone)
+        drone.end()
     except KeyboardInterrupt:
         print("\nCtrl+C pressed. Signalling main thread to land drone in emergency")
         drone.emergency()
     except Exception as e:
         print(f"An error occurred: {str(e)}")
-        utils.drone_land_sequence(drone)
+        drone.end()

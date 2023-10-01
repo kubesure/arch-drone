@@ -5,6 +5,9 @@ import queue
 from typing import Dict, Union
 
 
+FPS30 = 30
+
+
 class RingColor(Enum):
     YELLOW = 1
     RED = 2
@@ -18,6 +21,8 @@ class Ring:
     z: int
     area: int
     color: RingColor
+    bounding_height: int
+    bounding_width: int
 
 
 class Direction(Enum):
@@ -26,6 +31,8 @@ class Direction(Enum):
     RIGHT = 3
     LEFT = 4
     HOVER = 5
+    FORWARD = 6
+    BACKWARD = 7
 
 
 @dataclass
@@ -57,4 +64,7 @@ class DroneErrorCode(Enum):
     TakeOffError = 2
     HoverError = 3
     MoveForwardError = 4
+
+
+
 

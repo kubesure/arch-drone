@@ -8,15 +8,13 @@ import utils
 
 def plot(write_vid, detect: bool, duration, ring, drone: Tello):
     rings_detected: List[Ring] = []
-    drone.streamoff()
-    drone.streamon()
 
     out_writer, video_reader = utils.get_out_writer(write_vid)
 
     detector = contour.ContourFilter()
     start_time = time.time()
     while int(time.time() - start_time) < duration:
-        frame = video_reader.get_frame()
+        _, frame = video_reader.get_frame()
 
         if detect:
             r, detected_frame = detector.get_xyz_ring(frame, ring)
@@ -27,7 +25,6 @@ def plot(write_vid, detect: bool, duration, ring, drone: Tello):
 
     if write_vid:
         out_writer.release()
-    drone.streamoff()
 
     print(f"Rings from detector {len(rings_detected)}")
     final_detected: List[Ring] = []

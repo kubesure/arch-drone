@@ -1,17 +1,13 @@
 import queue
+
+import plotter
 from drone_types import Ring, DroneErrorCode
 from collections import Counter
 import cv2
 from datetime import datetime
 from cv2 import VideoWriter
 from typing import List
-
-
-def find_best(rings) -> (bool, Ring):
-    best_ring = Ring
-    for r in rings:
-        best_ring = Ring(x=34, y=45, z=150, area=0, color=r.ring)
-    return True, best_ring
+import drone_types
 
 
 def ring_detected(r: Ring) -> (bool, Ring):
@@ -70,13 +66,14 @@ class Cv2CapReader:
     def __init__(self):
         drone_video_url = 'udp://@0.0.0.0:11111'
         self.cap = cv2.VideoCapture(drone_video_url)
+        self.cap.set(cv2.CAP_PROP_FPS, drone_types.FPS30)
 
     def get_frame(self):
         ret, frame = self.cap.read()
         if not ret:
             print("Error: Couldn't read a frame from video.")
             return None
-        return frame
+        return ret, frame
 
 
 class DJIFrameRead:
@@ -92,7 +89,7 @@ class DJIFrameRead:
 
 
 def vid_writer(width, height):
-    current_time_str = datetime.now().strftime('%Y%m%d_%H')
+    current_time_str = datetime.now().strftime('%Y%m%d_%H%M%S')
     output_video_path = f"./data/videos/test_run_{current_time_str}.mp4"
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out_writer = cv2.VideoWriter(output_video_path, fourcc, 30, (width, height))
@@ -122,8 +119,10 @@ class DroneException(Exception):
 def drone_land_sequence(drone):
     drone.land()
     drone.streamoff()
+    drone.end()
 
 
+#write without detect
 def record_navigation(done: queue.Queue, write_vid: bool):
     out_writer, video_reader = get_out_writer(write_vid)
     while not done.get():

@@ -1,11 +1,11 @@
 import numpy as np
 import cv2
-from drone_types import RingColor, Ring
+from drone_types import RingColor, Ring, Direction
 
 
 class ContourFilter:
     def __init__(self):
-        self.boundry = 100
+        self.boundary = 100
         self.frameWidth = 640
         self.frameHeight = 480
         self.startcounter = 0
@@ -54,6 +54,9 @@ class ContourFilter:
         center_y = 0
         distance = 0
         area = 0
+        bounding_rect_height = 0
+        bounding_rect_width = 0
+        direction_to_go = Direction.FORWARD
 
         for cnt in contours:
             area = cv2.contourArea(cnt)
@@ -67,31 +70,32 @@ class ContourFilter:
             approx = cv2.approxPolyDP(cnt, 0.02 * peri, closure_curve)
 
             if area > areaMin and len(approx) > 4:
-                x, y, w, h = cv2.boundingRect(approx)
-                center_x = int(x + (w / 2))  # CENTER X OF THE OBJECT
-                center_y = int(y + (h / 2))  # CENTER y OF THE OBJECT
-                distance = self.distance_to_camera(known_width, FOCAL_LENGTH, w)
+                x, y, bounding_rect_width, bounding_rect_height = cv2.boundingRect(approx)
+                center_x = int(x + (bounding_rect_width / 2))  # CENTER X OF THE OBJECT
+                center_y = int(y + (bounding_rect_height / 2))  # CENTER y OF THE OBJECT
+                distance = self.distance_to_camera(known_width, FOCAL_LENGTH, bounding_rect_width)
 
-                if (center_x < int(self.frameWidth / 2) - self.boundry):
-                    dir = 1
-                elif (center_x > int(self.frameWidth / 2) + self.boundry):
-                    dir = 2
-                elif (center_y < int(self.frameWidth / 2) - self.boundry):
-                    dir = 3
-                elif (center_y > int(self.frameWidth / 2) + self.boundry):
-                    dir = 4
-                else:
-                    dir = 0
+                # TODO implement in navigator as detector should do only detection
+                '''
+                if center_x < int(bounding_rect_width / 2):
+                    direction_to_go = Direction.LEFT
+                elif center_x > int(bounding_rect_width / 2):
+                    direction_to_go = Direction.RIGHT
+                elif center_y < int(bounding_rect_height / 2):
+                    direction_to_go = Direction.UP
+                elif center_y > int(bounding_rect_height / 2):
+                    direction_to_go = Direction.DOWN
+                '''
 
                 cv2.circle(img, (int(center_x), int(center_y)), 3, (0, 0, 0), -1)
-                cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 5)
-                cv2.putText(img, "Area: " + str(int(area)), (x + w + 20, y + 20), cv2.FONT_HERSHEY_COMPLEX, 0.7,
-                            (0, 255, 0), 2)
-                cv2.putText(img, "Dist: " + str(int(distance)), (x + w + 20, y + 45), cv2.FONT_HERSHEY_COMPLEX, 0.7,
-                            (0, 255, 0), 2)
-            else:
-                dir = 0
-        r = Ring(x=center_x, y=center_y, z=distance, area=area, color=ring)
+                cv2.rectangle(img, (x, y), (x + bounding_rect_width, y + bounding_rect_height), (0, 255, 0), 5)
+                cv2.putText(img, "Area: " + str(int(area)), (x + bounding_rect_width + 20, y + 20),
+                            cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
+                cv2.putText(img, "Distance: " + str(int(distance)), (x + bounding_rect_height + 20, y + 45),
+                            cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
+
+        r = Ring(x=center_x, y=center_y, z=distance, area=area, color=ring,bounding_width=bounding_rect_width,
+                 bounding_height=bounding_rect_height)
         return r, img
 
     # compute and return the distance from the maker to the camera

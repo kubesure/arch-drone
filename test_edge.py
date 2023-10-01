@@ -4,7 +4,7 @@ from detector import edge as ed
 
 # cap = cv2.VideoCapture(0)
 # cap = cv2.VideoCapture('./data/videos/drone_scan_360.mov')
-cap = cv2.VideoCapture('./data/videos/scan_without_bg_1.mov')
+cap = cv2.VideoCapture('./data/videos/drone_scan_360.mov')
 # cap = cv2.VideoCapture('./data/videos/scan_2_rinr_angular_1.mov')
 # cap = cv2.VideoCapture('./data/videos/scan_2_rinr_angular_1.mov')
 

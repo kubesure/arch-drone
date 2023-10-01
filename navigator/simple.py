@@ -97,7 +97,3 @@ def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello) -> bool:
     drone.set_speed(int(inn.config['speed']))
     drone.move_forward(ring.z + 10)
     return True
-
-
-
-

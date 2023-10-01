@@ -77,16 +77,13 @@ class MockTello:
             return "ok"
         return "error"
 
-    def get_battery(self):
+    def get_battery(self) -> int:
         return self.battery
 
-    def get_speed(self):
+    def get_speed(self) -> int:
         return self.speed
 
-    def set_speed(self):
-        return self.speed
-
-    def get_flight_time(self):
+    def get_flight_time(self) -> int:
         return self.flight_time
 
     def streamon(self):
@@ -108,16 +105,12 @@ class MockTello:
             return "ok"
         return "error"
 
-    def get_height(self):
-        if self.connected:
-            return f"{self.height} cm"
-        return "error"
+    def get_height(self) -> int:
+        return self.height
 
-    def set_height(self, new_height):
-        if self.connected and self.flying:
-            self.height = new_height
-            return f"height set to {new_height} cm"
-        return "error"
+    def emergency(self):
+        print("Emergency situation detected!")
+        self.land()
 
 
 # Usage
