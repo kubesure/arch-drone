@@ -74,19 +74,6 @@ class ContourFilter:
                 center_x = int(x + (bounding_rect_width / 2))  # CENTER X OF THE OBJECT
                 center_y = int(y + (bounding_rect_height / 2))  # CENTER y OF THE OBJECT
                 distance = self.distance_to_camera(known_width, FOCAL_LENGTH, bounding_rect_width)
-
-                # TODO implement in navigator as detector should do only detection
-                '''
-                if center_x < int(bounding_rect_width / 2):
-                    direction_to_go = Direction.LEFT
-                elif center_x > int(bounding_rect_width / 2):
-                    direction_to_go = Direction.RIGHT
-                elif center_y < int(bounding_rect_height / 2):
-                    direction_to_go = Direction.UP
-                elif center_y > int(bounding_rect_height / 2):
-                    direction_to_go = Direction.DOWN
-                '''
-
                 cv2.circle(img, (int(center_x), int(center_y)), 3, (0, 0, 0), -1)
                 cv2.rectangle(img, (x, y), (x + bounding_rect_width, y + bounding_rect_height), (0, 255, 0), 5)
                 cv2.putText(img, "Area: " + str(int(area)), (x + bounding_rect_width + 20, y + 20),
