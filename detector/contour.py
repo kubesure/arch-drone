@@ -101,5 +101,4 @@ class ContourFilter:
     # compute and return the distance from the maker to the camera
     def distance_to_camera(self, knownWidth, focalLenght, perceivedWidth):
         distance = ((knownWidth * focalLenght) / perceivedWidth) * 2.54
-        # print(f"distance {distance}")
-        return distance
+        return int(distance)
