@@ -1,15 +1,10 @@
 import numpy as np
 import cv2
-from drone_types import RingColor, Ring, Direction
+from drone_types import RingColor, Ring
 
 
 class ContourFilter:
     def __init__(self):
-        self.boundary = 100
-        self.frameWidth = 640
-        self.frameHeight = 480
-        self.startcounter = 0
-        self.dir = 0
         pass
 
     def empty(self, a):
@@ -56,7 +51,6 @@ class ContourFilter:
         area = 0
         bounding_rect_height = 0
         bounding_rect_width = 0
-        direction_to_go = Direction.FORWARD
 
         for cnt in contours:
             area = cv2.contourArea(cnt)
@@ -81,8 +75,9 @@ class ContourFilter:
                 cv2.putText(img, "Distance: " + str(int(distance)), (x + bounding_rect_height + 20, y + 45),
                             cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
 
-        r = Ring(x=center_x, y=center_y, z=distance, area=area, color=ring,bounding_width=bounding_rect_width,
-                 bounding_height=bounding_rect_height)
+        frame_width, frame_height = img.shape
+        r = Ring(x=center_x, y=center_y, z=distance, area=area, color=ring, bounding_width=bounding_rect_width,
+                 bounding_height=bounding_rect_height, frame_width=frame_width, frame_height=frame_height)
         return r, img
 
     # compute and return the distance from the maker to the camera

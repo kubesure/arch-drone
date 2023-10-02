@@ -23,6 +23,8 @@ class Ring:
     color: RingColor
     bounding_height: int
     bounding_width: int
+    frame_width: int
+    frame_height: int
 
 
 class Direction(Enum):

@@ -1,5 +1,7 @@
 import config_loader
 from djitellopy import Tello
+
+import navigator.common
 from navigator import simple
 from drone_types import RingColor, Ring, NavigatorInput, DroneErrorCode
 from threading import Thread
@@ -15,7 +17,7 @@ def hover_and_detect_best(inn: NavigatorInput, dronee) -> (bool, Ring):
     is_detected = False
     rings_detected: List[Ring] = []
     while not is_detected:
-        drone_hover = Thread(target=simple.hover_at, args=(inn, dronee, attempts))
+        drone_hover = Thread(target=navigator.common.hover_at, args=(inn, dronee, attempts))
         drone_hover.start()
         rings = plotter.plot(True, True, inn.duration, inn.ring, dronee)
         rings_detected.append(rings)
@@ -34,7 +36,7 @@ def hover_and_detect_avg_distance(inn: NavigatorInput, dronee) -> (bool, Ring):
     is_detected = False
     rings_detected: List[Ring] = []
     while not is_detected:
-        drone_hover = Thread(target=simple.hover_at, args=(inn, dronee, attempts))
+        drone_hover = Thread(target=navigator.common.hover_at, args=(inn, dronee, attempts))
         drone_hover.start()
         rings_detected = plotter.plot(True, True, inn.duration, inn.ring, dronee)
         print(f"Rings detected {rings_detected}")
