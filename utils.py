@@ -52,7 +52,7 @@ def get_avg_distance(rings) -> (bool, Ring):
     color_counts = Counter(ring.color for ring in rings_to_consider)
     avg_color = color_counts.most_common(1)[0][0]
     average_ring = Ring(x=avg_x, y=avg_y, z=avg_z, area=avg_area, color=avg_color)
-    print(f"Returning avg ring {average_ring}")
+    print(f"Returning the AVG ring {average_ring}")
     return True, average_ring
 
 

@@ -35,7 +35,7 @@ def plot(write_vid, detect: bool, duration, ring, drone: Tello):
     for r in rings_detected:
         if utils.ring_detected(r):
             final_detected.append(r)
-    logger.info(f"Final Rings from plotter {len(final_detected)} - rings {final_detected}")
+    logger.info(f"Final rings from plotter {len(final_detected)} - rings {final_detected}")
     return final_detected
 
 
