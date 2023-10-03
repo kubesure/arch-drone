@@ -21,10 +21,6 @@ class Ring:
     z: int
     area: int
     color: RingColor
-    bounding_height: int
-    bounding_width: int
-    frame_width: int
-    frame_height: int
 
 
 class Direction(Enum):
@@ -35,6 +31,7 @@ class Direction(Enum):
     HOVER = 5
     FORWARD = 6
     BACKWARD = 7
+    CENTER = 8
 
 
 @dataclass

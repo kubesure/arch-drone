@@ -4,12 +4,16 @@ from detector import contour
 import time
 from djitellopy import Tello
 import utils
+from arch_logger import logger
 
 
 def plot(write_vid, detect: bool, duration, ring, drone: Tello):
     rings_detected: List[Ring] = []
 
     out_writer, video_reader = utils.get_out_writer(write_vid)
+
+    if out_writer is None or video_reader is None:
+        write_vid = False
 
     detector = contour.ContourFilter()
     start_time = time.time()
@@ -26,12 +30,12 @@ def plot(write_vid, detect: bool, duration, ring, drone: Tello):
     if write_vid:
         out_writer.release()
 
-    print(f"Rings from detector {len(rings_detected)}")
+    logger.info(f"Rings from detector {len(rings_detected)} - rings {rings_detected}")
     final_detected: List[Ring] = []
     for r in rings_detected:
         if utils.ring_detected(r):
             final_detected.append(r)
-    print(f"Final Rings from plotter {len(final_detected)}")
+    logger.info(f"Final Rings from plotter {len(final_detected)} - rings {final_detected}")
     return final_detected
 
 

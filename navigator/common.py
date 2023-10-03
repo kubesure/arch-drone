@@ -57,16 +57,17 @@ def get_optimum_hover_height(drone, inn):
 
 def hover_to_y(drone, inn, y_direction, y_movement):
     if y_direction == Direction.UP:
-        print(f"moving up {y_movement} ring {inn.ring}")
+        print(f"move up {y_movement} ring {inn.ring}")
         drone.move_up(y_movement)
     elif y_direction == Direction.DOWN:
-        print(f"moving down {y_movement} ring {inn.ring}")
+        print(f"move down {y_movement} ring {inn.ring}")
         drone.move_down(y_movement)
     elif y_direction == Direction.HOVER:
         print(f"hovering at height {drone.get_height()}")
 
 
 def hover(duration):
+    print(f"hovering for duration {duration}")
     hover_time = duration
     while True:
         sleep(1)

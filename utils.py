@@ -98,12 +98,14 @@ def vid_writer(width, height):
 
 def get_out_writer(write_vid):
     video_reader = Cv2CapReader()
-    frame = video_reader.get_frame()
+    ret, frame = video_reader.get_frame()
     out_writer: VideoWriter
-    if write_vid:
-        height, width, _ = frame.shape
-        out_writer = vid_writer(width, height)
-    return out_writer, video_reader
+    if ret:
+        if write_vid:
+            height, width, _ = frame.shape
+            out_writer = vid_writer(width, height)
+            return out_writer, video_reader
+    return None, None
 
 
 class DroneException(Exception):
@@ -122,10 +124,11 @@ def drone_land_sequence(drone):
     drone.end()
 
 
-#write without detect
+# write without detect
 def record_navigation(done: queue.Queue, write_vid: bool):
     out_writer, video_reader = get_out_writer(write_vid)
     while not done.get():
-        frame = video_reader.get_frame()
-        if write_vid:
-            out_writer.write(frame)
+        ret,  frame = video_reader.get_frame()
+        if ret:
+            if write_vid:
+                out_writer.write(frame)
