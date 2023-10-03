@@ -2,16 +2,15 @@ from drone_types import Direction, Ring, NavigatorInput
 from djitellopy import Tello
 import plotter
 import utils
-from navigator.common import get_optimum_hover_height, hover_to_y
+from navigator.common import get_optimum_hover_height, move_to_y, hover
 from threading import Thread
 import navigator
-import time
 from arch_logger import logger
 
 
 def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello) -> bool:
     drone.set_speed(int(inn.config['speed']))
-    distance_to_travel = ring.z + 30
+    distance_to_travel = ring.z + 25
     distance_travelled = 0
     incremental_distance = round(abs(distance_to_travel / 2))
 
@@ -21,25 +20,28 @@ def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello) -> bool:
         drone.move_forward(incremental_distance)
         distance_travelled = distance_travelled + incremental_distance
         logger.info(f"distance to travel left {incremental_distance}")
-        inn.duration = 2
-        time.sleep(2)
+        hover(2)
         y_direction, y_movement = get_optimum_hover_height(drone, inn)
         logger.info(f"hover to y direction {y_direction} y_movement {y_movement}")
-        hover_to_y(drone, inn, y_direction, y_movement)
+        move_to_y(drone, inn, y_direction, y_movement)
+        hover(2)
         x_direction, x_movement = corrected_x(inn, ring, drone)
         logger.info(f"moving to corrected x {x_movement} direction {x_direction}")
         if x_movement > 0 and x_direction == Direction.RIGHT:
             logger.info(f"moving to corrected x {x_movement} direction {x_direction}")
             drone.move_right(x_movement)
+            hover(2)
         if x_movement > 0 and x_direction == Direction.LEFT:
             logger.info(f"moving to corrected x {x_movement} direction {x_direction}")
             drone.move_left(x_movement)
+            hover(2)
     return True
 
 
 # calculate x with new detection and determine corrected x
 def corrected_x(inn: NavigatorInput, set_ring, drone) -> (Direction, int):
     direction_to_go = Direction.CENTER
+    inn.duration = 4
     drone_hover = Thread(target=navigator.common.hover_at, args=(inn, drone, 1))
     drone_hover.start()
     rings_detected = plotter.plot(False, True, inn.duration, inn.ring, drone)

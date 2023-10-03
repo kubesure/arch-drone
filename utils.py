@@ -115,7 +115,10 @@ class DroneException(Exception):
         super().__init__(self.message)
 
     def get_error_message(self):
-        return f"Code {self.error_code}: {self.message}"
+        return f"code {self.error_code}: message {self.message}"
+
+    def get_error_code(self):
+        return self.error_code
 
 
 def drone_land_sequence(drone):

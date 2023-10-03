@@ -70,13 +70,14 @@ if __name__ == '__main__':
                 hover_input = NavigatorInput(ring=ring,
                                              config=config,
                                              q=q,
-                                             duration=2)
+                                             duration=4)
                 detected, ring_data = hover_and_detect_avg_distance(hover_input, drone)
                 if detected:
                     logger.info(f"ring detected {ring_data}")
                     simple.navigate_to(hover_input, ring_data, drone)
             drone.end()
     except DroneException as de:
+        logger.error(de.get_error_message())
         drone.end()
     except KeyboardInterrupt:
         logger.error("Ctrl+C pressed or process killed. Signalling main thread to land drone in emergency")
