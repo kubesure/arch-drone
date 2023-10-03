@@ -39,7 +39,6 @@ def hover_and_detect_avg_distance(inn: NavigatorInput, dronee) -> (bool, Ring):
         drone_hover = Thread(target=navigator.common.hover_at, args=(inn, dronee, attempts))
         drone_hover.start()
         rings_detected = plotter.plot(True, True, inn.duration, inn.ring, dronee)
-        logger.info(f"Rings detected {rings_detected}")
         drone_hover.join()
         if attempts == 1:
             break
@@ -57,8 +56,8 @@ if __name__ == '__main__':
         drone.streamoff()
         drone.streamon()
         logger.info(f"battery percentage - {drone.get_battery()}")
-        if drone.get_battery() < 2.5:
-            logger.info(f"battery not charged enough")
+        if drone.get_battery() < 50:
+            logger.info(f"battery less than 50% will cause issues flight re-charge")
             drone.end()
         else:
             drone.takeoff()
@@ -73,7 +72,7 @@ if __name__ == '__main__':
                                              duration=4)
                 detected, ring_data = hover_and_detect_avg_distance(hover_input, drone)
                 if detected:
-                    logger.info(f"ring detected {ring_data}")
+                    logger.info(f"ring detected to navigate {ring_data}")
                     simple.navigate_to(hover_input, ring_data, drone)
             drone.end()
     except DroneException as de:
