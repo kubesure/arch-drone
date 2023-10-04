@@ -18,14 +18,13 @@ class MyTestCase(unittest.TestCase):
 
     def test_average_distance(self):
         rings = self.get_test_rings()
-        ring = utils.get_avg_distance(rings)
-        print(ring)
+        _, ring = utils.get_avg_distance(rings)
         self.assertEqual(ring.color, RingColor.YELLOW)
 
     @staticmethod
     def get_test_rings():
         r1 = Ring(x=34, y=90, z=350, area=4500, color=RingColor.YELLOW)
-        r2 = Ring(x=32, y=95, z=300, area=3600, color=RingColor.YELLOW)
+        r2 = Ring(x=32, y=95, z=0, area=3600, color=RingColor.YELLOW)
         r3 = Ring(x=30, y=85, z=315, area=5600, color=RingColor.YELLOW)
         r4 = Ring(x=31, y=80, z=325, area=6000, color=RingColor.YELLOW)
         rings = [r1, r2, r3, r4]
