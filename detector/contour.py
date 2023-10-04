@@ -49,8 +49,6 @@ class ContourFilter:
         center_y = 0
         distance = 0
         area = 0
-        bounding_rect_height = 0
-        bounding_rect_width = 0
 
         for cnt in contours:
             area = cv2.contourArea(cnt)
@@ -68,16 +66,15 @@ class ContourFilter:
                 center_x = int(x + (bounding_rect_width / 2))  # CENTER X OF THE OBJECT
                 center_y = int(y + (bounding_rect_height / 2))  # CENTER y OF THE OBJECT
                 distance = self.distance_to_camera(known_width, FOCAL_LENGTH, bounding_rect_width)
+
                 cv2.circle(img, (int(center_x), int(center_y)), 3, (0, 0, 0), -1)
                 cv2.rectangle(img, (x, y), (x + bounding_rect_width, y + bounding_rect_height), (0, 255, 0), 5)
                 cv2.putText(img, "Area: " + str(int(area)), (x + bounding_rect_width + 20, y + 20),
                             cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
                 cv2.putText(img, "Distance: " + str(int(distance)), (x + bounding_rect_height + 20, y + 45),
                             cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
-
-        frame_width, frame_height = img.shape
-        r = Ring(x=center_x, y=center_y, z=distance, area=area, color=ring, bounding_width=bounding_rect_width,
-                 bounding_height=bounding_rect_height, frame_width=frame_width, frame_height=frame_height)
+        # error should only return of collect in if condition
+        r = Ring(x=center_x, y=center_y, z=distance, area=area, color=ring)
         return r, img
 
     # compute and return the distance from the maker to the camera
