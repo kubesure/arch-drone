@@ -1,5 +1,7 @@
 import queue
 
+import numpy as np
+
 import plotter
 from drone_types import Ring, DroneErrorCode
 from collections import Counter
@@ -64,11 +66,25 @@ def get_percentage_rings(rings, percent_to_discard, first_half):
         return rings[:-num_to_consider]
 
 
-class Cv2CapReader:
-    def __init__(self):
+class Cv2CapReaderWriter:
+    def __init__(self, write_vid=True):
         drone_video_url = 'udp://@0.0.0.0:11111'
         self.cap = cv2.VideoCapture(drone_video_url)
         self.cap.set(cv2.CAP_PROP_FPS, drone_types.FPS30)
+        self.write_vid = write_vid
+        if self.write_vid:
+            self.writer = self.create_writer()
+
+    def create_writer(self) -> cv2.VideoWriter:
+        ret, frame = self.get_frame()
+        out_writer: VideoWriter
+        if ret:
+            height, width, _ = frame.shape
+            current_time_str = datetime.now().strftime('%Y%m%d_%H%M%S')
+            output_video_path = f"./data/videos/test_run_{current_time_str}.mp4"
+            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+            out_writer = cv2.VideoWriter(output_video_path, fourcc, 30, (width, height))
+            return out_writer
 
     def get_frame(self):
         ret, frame = self.cap.read()
@@ -76,6 +92,17 @@ class Cv2CapReader:
             print("Error: Couldn't read a frame from video.")
             return None
         return ret, frame
+
+    def write(self, frame: np.ndarray):
+        if self.write_vid:
+            self.writer.write(frame)
+        else:
+            raise DroneException(message="attempting to write while no writer", code=DroneErrorCode.WriterError)
+
+    def is_writeable(self):
+        return self.write_vid
+    def release(self):
+        self.cap.release()
 
 
 class DJIFrameRead:
@@ -88,26 +115,6 @@ class DJIFrameRead:
             print("Error: Couldn't read a frame from video.")
             return None
         return frame
-
-
-def vid_writer(width, height):
-    current_time_str = datetime.now().strftime('%Y%m%d_%H%M%S')
-    output_video_path = f"./data/videos/test_run_{current_time_str}.mp4"
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out_writer = cv2.VideoWriter(output_video_path, fourcc, 30, (width, height))
-    return out_writer
-
-
-def get_out_writer(write_vid):
-    video_reader = Cv2CapReader()
-    ret, frame = video_reader.get_frame()
-    out_writer: VideoWriter
-    if ret:
-        if write_vid:
-            height, width, _ = frame.shape
-            out_writer = vid_writer(width, height)
-            return out_writer, video_reader
-    return None, None
 
 
 class DroneException(Exception):
@@ -128,12 +135,3 @@ def drone_land_sequence(drone):
     drone.streamoff()
     drone.end()
 
-
-# write without detect
-def record_navigation(done: queue.Queue, write_vid: bool):
-    out_writer, video_reader = get_out_writer(write_vid)
-    while not done.get():
-        ret,  frame = video_reader.get_frame()
-        if ret:
-            if write_vid:
-                out_writer.write(frame)

@@ -52,7 +52,7 @@ class DroneState:
 
 @dataclass
 class NavigatorInput:
-    ring: RingColor
+    ring_color: RingColor
     config: Dict[str, Union[float, int]]
     q: queue.Queue
     duration: int
@@ -63,6 +63,7 @@ class DroneErrorCode(Enum):
     TakeOffError = 2
     HoverError = 3
     MoveForwardError = 4
+    WriterError = 5
 
 
 

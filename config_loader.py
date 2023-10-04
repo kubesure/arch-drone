@@ -17,6 +17,8 @@ def get_configurations():
         'yellow_optimum_hover_ht': int(config['RingProperties']['yellow_optimum_hover_ht']),
         'red_optimum_hover_ht': int(config['RingProperties']['red_optimum_hover_ht']),
         'speed': int(config['DroneProperties']['speed']),
-
+        'max_distance_btw_rings': int(config['RingProperties']['max_distance_btw_rings']),
+        'hover_up_down_threshold': int(config['DroneProperties']['hover_up_down_threshold']),
+        'right_left_threshold': int(config['DroneProperties']['right_left_threshold']),
     }
     return configurations

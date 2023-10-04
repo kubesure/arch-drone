@@ -10,8 +10,9 @@ from arch_logger import logger
 
 def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello) -> bool:
     speed = int(inn.config['speed'])
+    max_distance_btw_rings = int(inn.config['max_distance_btw_rings'])
     drone.set_speed(speed)
-    distance_to_travel = ring.z + 25
+    distance_to_travel = max_distance_btw_rings + 20
     distance_travelled = 0
     incremental_distance = round(abs(distance_to_travel / 2))
 
@@ -24,13 +25,13 @@ def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello) -> bool:
         drone.move_forward(incremental_distance)
         distance_travelled = distance_travelled + incremental_distance
         logger.info(f"distance to travel left {distance_to_travel - distance_travelled}")
-        hover(2)
+        hover(4)
 
         # Up Down
         y_direction, y_movement = get_optimum_hover_height(drone, inn)
         logger.info(f"hover to y direction {y_direction} y_movement {y_movement}")
         move_to_y(drone, inn, y_direction, y_movement)
-        hover(2)
+        hover(4)
 
         # Left Right
         x_direction, x_movement, _ = corrected_x(inn, ring, drone)
@@ -50,11 +51,12 @@ def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello) -> bool:
 # calculate x with new detection and determine corrected x
 def corrected_x(inn: NavigatorInput, set_ring, drone) -> (Direction, int, Ring):
     direction_to_go = Direction.CENTER
+    right_left_threshold = int(inn.config['right_left_threshold'])
     inn.duration = 4
-    attempts = 1
+    attempts = 4
     drone_hover = Thread(target=navigator.common.hover_at, args=(inn, drone, attempts))
     drone_hover.start()
-    rings_detected = plotter.plot(False, True, inn.duration, inn.ring, drone)
+    rings_detected = plotter.plot(False, True, inn.ring_color, drone, inn)
     drone_hover.join()
 
     new_ring = utils.get_avg_distance(rings_detected)
@@ -62,13 +64,11 @@ def corrected_x(inn: NavigatorInput, set_ring, drone) -> (Direction, int, Ring):
     deviation_x = new_ring.x - set_ring.x
     logger.info(f"deviation x {deviation_x}")
 
-    if deviation_x > 0:
+    if 0 > deviation_x < right_left_threshold:
         direction_to_go = Direction.RIGHT
         logger.info(f"difference in current x and frame width {deviation_x} moving to {direction_to_go}")
-    elif deviation_x < 0:
+    elif 0 < deviation_x < right_left_threshold:
         direction_to_go = Direction.LEFT
         logger.info(f"difference in current x and frame width {deviation_x} moving to {direction_to_go}")
-    elif deviation_x == 0:
-        direction_to_go = Direction.CENTER
     return direction_to_go, deviation_x, new_ring
 

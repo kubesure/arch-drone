@@ -19,7 +19,7 @@ def hover_and_detect_best(inn: NavigatorInput, dronee) -> (bool, Ring):
     while not is_detected:
         drone_hover = Thread(target=navigator.common.hover_at, args=(inn, dronee, attempts))
         drone_hover.start()
-        rings = plotter.plot(True, True, inn.duration, inn.ring, dronee)
+        rings = plotter.plot(True, True, inn.duration, inn.ring_color, dronee)
         rings_detected.append(rings)
         drone_hover.join()
         if attempts != 0:
@@ -31,14 +31,14 @@ def hover_and_detect_best(inn: NavigatorInput, dronee) -> (bool, Ring):
     return utils.get_short_or_longest_distance(rings_detected, True)
 
 
-def hover_and_detect_avg_distance(inn: NavigatorInput, dronee) -> (bool, Ring):
+def hover_and_detect_avg_distance(inn: NavigatorInput, dronee, cap_reader_writer) -> (bool, Ring):
     attempts = 1
     is_detected = False
     rings_detected: List[Ring] = []
     while not is_detected:
         drone_hover = Thread(target=navigator.common.hover_at, args=(inn, dronee, attempts))
         drone_hover.start()
-        rings_detected = plotter.plot(True, True, inn.duration, inn.ring, dronee)
+        rings_detected = plotter.plot(inn, cap_reader_writer)
         drone_hover.join()
         if attempts == 1:
             break
@@ -55,6 +55,7 @@ if __name__ == '__main__':
         drone.connect()
         drone.streamoff()
         drone.streamon()
+        cap_reader_writer = utils.Cv2CapReaderWriter()
         logger.info(f"battery percentage - {drone.get_battery()}")
         if drone.get_battery() < 50:
             logger.info(f"battery less than 50% will cause issues flight re-charge")
@@ -66,14 +67,17 @@ if __name__ == '__main__':
             q = queue.Queue()
             for ring in ring_sequence:
                 logger.info(f"hovering for ring {ring}")
-                hover_input = NavigatorInput(ring=ring,
+                hover_input = NavigatorInput(ring_color=ring,
                                              config=config,
                                              q=q,
                                              duration=4)
-                detected, ring_data = hover_and_detect_avg_distance(hover_input, drone)
+
+                detected, ring_data = hover_and_detect_avg_distance(hover_input, drone, cap_reader_writer)
+
                 if detected:
                     logger.info(f"ring detected to navigate {ring_data}")
                     simple.navigate_to(hover_input, ring_data, drone)
+            cap_reader_writer.release()
             drone.end()
     except DroneException as de:
         logger.error(de.get_error_message())
