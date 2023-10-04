@@ -19,7 +19,7 @@ def ring_detected(r: Ring) -> (bool, Ring):
 def filter_zero_distances(rings):
     rings_detected: List[Ring] = []
     for ring in rings:
-        if ring_detected(ring):
+        if ring_detected(ring)[0]:
             rings_detected.append(ring)
     return rings_detected
 
@@ -42,7 +42,7 @@ def get_avg_distance(rings) -> (bool, Ring):
     rings = filter_zero_distances(rings)
     print(f"Ring for average after filter {len(rings)}")
 
-    rings_to_consider = get_percentage_rings(rings, .50)
+    rings_to_consider = get_percentage_rings(rings, .50,True)
     print(f"total rings {len(rings)} rings considered for avg {len(rings_to_consider)}")
 
     avg_x = int(sum(ring.x for ring in rings_to_consider) / len(rings_to_consider))
@@ -56,10 +56,12 @@ def get_avg_distance(rings) -> (bool, Ring):
     return True, average_ring
 
 
-def get_percentage_rings(rings, percent_to_discard):
+def get_percentage_rings(rings, percent_to_discard, first_half):
     num_to_consider = int(len(rings) * (1 - percent_to_discard))
-    rings_to_consider = rings[-num_to_consider:]
-    return rings_to_consider
+    if not first_half:
+        return rings[-num_to_consider:]
+    else:
+        return rings[:-num_to_consider]
 
 
 class Cv2CapReader:
