@@ -10,6 +10,7 @@ from datetime import datetime
 from cv2 import VideoWriter
 from typing import List
 import drone_types
+from arch_logger import logger
 
 
 def ring_detected(r: Ring) -> (bool, Ring):
@@ -68,8 +69,8 @@ def get_percentage_rings(rings, percent_to_discard, first_half):
 
 class Cv2CapReaderWriter:
     def __init__(self, write_vid=True):
-        drone_video_url = 'udp://@0.0.0.0:11111'
-        self.cap = cv2.VideoCapture(drone_video_url)
+        self.drone_video_url = 'udp://@0.0.0.0:11111'
+        self.cap = cv2.VideoCapture(self.drone_video_url)
         self.cap.set(cv2.CAP_PROP_FPS, drone_types.FPS30)
         self.write_vid = write_vid
         if self.write_vid:
@@ -87,10 +88,16 @@ class Cv2CapReaderWriter:
             return out_writer
 
     def get_frame(self):
+        if self.cap is None:
+            self.cap = cv2.VideoCapture(self.drone_video_url)
+
+        if not self.cap.isOpened():
+            self.cap.open(self.drone_video_url)
+
         ret, frame = self.cap.read()
         if not ret:
-            print("Error: Couldn't read a frame from video.")
-            return None
+            logger.info("Error: Couldn't read a frame from video.")
+            return None, None
         return ret, frame
 
     def write(self, frame: np.ndarray):
@@ -103,6 +110,8 @@ class Cv2CapReaderWriter:
         return self.write_vid
     def release(self):
         self.cap.release()
+
+
 
 
 class DJIFrameRead:

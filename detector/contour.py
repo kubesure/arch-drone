@@ -56,7 +56,7 @@ class ContourFilter:
             if ring == RingColor.RED:
                 areaMin = 3500
             elif ring == RingColor.YELLOW:
-                areaMin = 1500
+                areaMin = 7000
 
             peri = cv2.arcLength(cnt, closure_curve)
             approx = cv2.approxPolyDP(cnt, 0.02 * peri, closure_curve)

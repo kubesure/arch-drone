@@ -11,7 +11,8 @@ def hover_at(inn: NavigatorInput, drone: Tello, attempt):
     # TODO write exception handling since its a thread inform main thread
 
     y_direction, y_movement = get_optimum_hover_height(drone, inn)
-    move_to_y(drone, inn, y_direction, y_movement)
+    if attempt != 4:
+        move_to_y(drone, inn, y_direction, y_movement)
     hover(2)
 
     if attempt == 1:

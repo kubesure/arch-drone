@@ -27,3 +27,4 @@ def plot(inn, cap_reader_writer):
         return final_detected
     except Exception as e:
         logger.error(f"An error occurred in plotter: {str(e)}")
+        raise e

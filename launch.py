@@ -12,33 +12,14 @@ import utils
 from arch_logger import logger
 
 
-def hover_and_detect_best(inn: NavigatorInput, dronee) -> (bool, Ring):
+def hover_and_detect_avg_distance(inn: NavigatorInput, dronee, cap_read_write) -> (bool, Ring):
     attempts = 1
     is_detected = False
     rings_detected: List[Ring] = []
     while not is_detected:
         drone_hover = Thread(target=navigator.common.hover_at, args=(inn, dronee, attempts))
         drone_hover.start()
-        rings = plotter.plot(True, True, inn.duration, inn.ring_color, dronee)
-        rings_detected.append(rings)
-        drone_hover.join()
-        if attempts != 0:
-            attempts = attempts + 1
-            rings_detected.append(rings)
-        elif attempts == 3:
-            rings_detected.append(rings)
-            break
-    return utils.get_short_or_longest_distance(rings_detected, True)
-
-
-def hover_and_detect_avg_distance(inn: NavigatorInput, dronee, cap_reader_writer) -> (bool, Ring):
-    attempts = 1
-    is_detected = False
-    rings_detected: List[Ring] = []
-    while not is_detected:
-        drone_hover = Thread(target=navigator.common.hover_at, args=(inn, dronee, attempts))
-        drone_hover.start()
-        rings_detected = plotter.plot(inn, cap_reader_writer)
+        rings_detected = plotter.plot(inn, cap_read_write)
         drone_hover.join()
         if attempts == 1:
             break
@@ -62,6 +43,7 @@ if __name__ == '__main__':
             drone.end()
         else:
             drone.takeoff()
+            navigator.common.hover(2)
             if not drone.is_flying:
                 raise DroneException("Take off error", DroneErrorCode.TakeOffError)
             q = queue.Queue()
@@ -76,7 +58,7 @@ if __name__ == '__main__':
 
                 if detected:
                     logger.info(f"ring detected to navigate {ring_data}")
-                    simple.navigate_to(hover_input, ring_data, drone)
+                    simple.navigate_to(hover_input, ring_data, drone, cap_reader_writer)
             cap_reader_writer.release()
             drone.end()
     except DroneException as de:
