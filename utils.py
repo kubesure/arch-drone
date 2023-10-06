@@ -1,8 +1,4 @@
-import queue
-
 import numpy as np
-
-import plotter
 from drone_types import Ring, DroneErrorCode
 from collections import Counter
 import cv2
@@ -27,11 +23,19 @@ def filter_zero_distances(rings):
     return rings_detected
 
 
+def filter_distance(rings, distance):
+    rings_dist_filter: List[Ring] = []
+    for ring in rings:
+        if ring.z < distance:
+            rings_dist_filter.append(ring)
+    return rings_dist_filter
+
+
 def get_short_or_longest_distance(rings, longest) -> (bool, Ring):
-    print(f"finding short of long ring out of rings {len(rings)}")
+    logger.info(f"finding short of long ring out of rings {len(rings)}")
 
     rings = filter_zero_distances(rings)
-    print(f"Ring for long short after filter {len(rings)}")
+    logger.info(f"Ring for long short after filter {len(rings)}")
 
     if len(rings) == 0:
         return False, None
@@ -39,14 +43,19 @@ def get_short_or_longest_distance(rings, longest) -> (bool, Ring):
     return True, sorted_rings[0]
 
 
-def get_avg_distance(rings) -> (bool, Ring):
-    print(f"Ring for average {len(rings)}")
+def get_avg_distance(rings, inn) -> (bool, Ring):
+    # logger.info(f"Ring for average {len(rings)}")
 
     rings = filter_zero_distances(rings)
-    print(f"Ring for average after filter {len(rings)}")
+    # logger.info(f"Ring for average after zero filter {len(rings)}")
 
-    rings_to_consider = get_percentage_rings(rings, .50,True)
-    print(f"total rings {len(rings)} rings considered for avg {len(rings_to_consider)}")
+    max_distance_btw_rings = 150
+    # logger.info(f"max_distance_btw_rings in get avg distance {max_distance_btw_rings}")
+    rings = filter_distance(rings, max_distance_btw_rings)
+    # logger.info(f"rings for percentage {rings}")
+
+    rings_to_consider = get_percentage_rings(rings, .50, True)
+    # logger.info(f"total rings {len(rings)} rings considered for avg {len(rings_to_consider)}")
 
     avg_x = int(sum(ring.x for ring in rings_to_consider) / len(rings_to_consider))
     avg_y = int(sum(ring.y for ring in rings_to_consider) / len(rings_to_consider))
@@ -55,7 +64,7 @@ def get_avg_distance(rings) -> (bool, Ring):
     color_counts = Counter(ring.color for ring in rings_to_consider)
     avg_color = color_counts.most_common(1)[0][0]
     average_ring = Ring(x=avg_x, y=avg_y, z=avg_z, area=avg_area, color=avg_color)
-    print(f"Returning the AVG ring {average_ring}")
+    logger.info(f"Returning the AVG ring {average_ring}")
     return True, average_ring
 
 
@@ -108,10 +117,9 @@ class Cv2CapReaderWriter:
 
     def is_writeable(self):
         return self.write_vid
+
     def release(self):
         self.cap.release()
-
-
 
 
 class DJIFrameRead:
@@ -143,4 +151,3 @@ def drone_land_sequence(drone):
     drone.land()
     drone.streamoff()
     drone.end()
-
