@@ -56,6 +56,7 @@ class NavigatorInput:
     config: Dict[str, Union[float, int]]
     q: queue.Queue
     duration: int
+    last_ring_navigated: Ring
 
 
 class DroneErrorCode(Enum):
