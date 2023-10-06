@@ -1,7 +1,7 @@
 import config_loader
 from djitellopy import Tello
 import navigator.common
-from navigator import simple, basic
+from navigator import simple
 from drone_types import RingColor, Ring, NavigatorInput, DroneErrorCode
 from threading import Thread
 import queue
@@ -23,7 +23,7 @@ def hover_and_detect_avg_distance(inn: NavigatorInput, dronee, cap_read_write) -
         drone_hover.join()
         if attempts == 1:
             break
-    return utils.get_avg_distance(rings_detected)
+    return utils.get_avg_distance(rings_detected, inn)
 
 
 # TODO add exception handling
@@ -31,34 +31,33 @@ if __name__ == '__main__':
     drone = Tello()
 
     try:
-        ring_sequence = [RingColor.YELLOW,RingColor.YELLOW]
+        ring_sequence = [RingColor.YELLOW, RingColor.YELLOW]
         config = config_loader.get_configurations()
         drone.connect()
         drone.streamoff()
         drone.streamon()
         cap_reader_writer = utils.Cv2CapReaderWriter()
         logger.info(f"battery percentage - {drone.get_battery()}")
-        if drone.get_battery() < 50:
+        if drone.get_battery() < 40:
             logger.info(f"battery less than 50% will cause issues flight re-charge")
             drone.end()
         else:
             drone.takeoff()
-            navigator.common.hover(2)
+            # navigator.common.hover(2)
             if not drone.is_flying:
                 raise DroneException("Take off error", DroneErrorCode.TakeOffError)
             q = queue.Queue()
+            last_ring_navigated = Ring(x=0, y=0, z=0, area=0, color=RingColor.YELLOW)
             for ring in ring_sequence:
-                logger.info(f"hovering for ring {ring}")
-                hover_input = NavigatorInput(ring_color=ring,
-                                             config=config,
-                                             q=q,
-                                             duration=4)
-
-                detected, ring_data = hover_and_detect_avg_distance(hover_input, drone, cap_reader_writer)
-
+                fly_input = NavigatorInput(ring_color=ring,
+                                           config=config,
+                                           q=q,
+                                           duration=4,
+                                           last_ring_navigated=last_ring_navigated)
+                detected, ring = hover_and_detect_avg_distance(fly_input, drone, cap_reader_writer)
                 if detected:
-                    logger.info(f"ring detected to navigate {ring_data}")
-                    simple.navigate_to(hover_input, ring_data, drone, cap_reader_writer)
+                    logger.info(f"ring detected navigate to {ring}")
+                    navigated, last_navigated_ring = simple.navigate_to(fly_input, ring, drone, cap_reader_writer)
             cap_reader_writer.release()
             drone.end()
     except DroneException as de:
