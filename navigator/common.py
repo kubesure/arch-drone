@@ -103,3 +103,4 @@ def attempt_3_routine(drone):
     hover(2)
     drone.rotate_clockwise(15)
     hover(2)
+

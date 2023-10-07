@@ -37,6 +37,11 @@ def get_short_or_longest_distance(rings, longest) -> (bool, Ring):
     rings = filter_zero_distances(rings)
     logger.info(f"Ring for long short after filter {len(rings)}")
 
+    max_distance_btw_rings = 150
+    logger.info(f"max_distance_btw_rings in get avg distance {max_distance_btw_rings}")
+    rings = filter_distance(rings, max_distance_btw_rings)
+    logger.info(f"rings for percentage {rings}")
+
     if len(rings) == 0:
         return False, None
     sorted_rings = sorted(rings, key=lambda ring: ring.z, reverse=longest)
@@ -49,13 +54,16 @@ def get_avg_distance(rings, inn) -> (bool, Ring):
     rings = filter_zero_distances(rings)
     # logger.info(f"Ring for average after zero filter {len(rings)}")
 
-    max_distance_btw_rings = 150
+    # max_distance_btw_rings = int(inn.config['max_distance_btw_rings'])
     # logger.info(f"max_distance_btw_rings in get avg distance {max_distance_btw_rings}")
+    max_distance_btw_rings = 150
+
+    logger.info(f"max_distance_btw_rings in get avg distance {max_distance_btw_rings}")
     rings = filter_distance(rings, max_distance_btw_rings)
-    # logger.info(f"rings for percentage {rings}")
+    logger.info(f"rings for percentage {rings}")
 
     rings_to_consider = get_percentage_rings(rings, .50, True)
-    # logger.info(f"total rings {len(rings)} rings considered for avg {len(rings_to_consider)}")
+    logger.info(f"total rings {len(rings)} rings considered for avg {len(rings_to_consider)}")
 
     avg_x = int(sum(ring.x for ring in rings_to_consider) / len(rings_to_consider))
     avg_y = int(sum(ring.y for ring in rings_to_consider) / len(rings_to_consider))
@@ -78,7 +86,9 @@ def get_percentage_rings(rings, percent_to_discard, first_half):
 
 class Cv2CapReaderWriter:
     def __init__(self, write_vid=True):
-        self.drone_video_url = 'udp://@0.0.0.0:11111'
+        buffer = int(25 * 1024 * 1024)
+        buffer_str = str(buffer)
+        self.drone_video_url = 'udp://@0.0.0.0:11111?overrun_nonfatal=1'
         self.cap = cv2.VideoCapture(self.drone_video_url)
         self.cap.set(cv2.CAP_PROP_FPS, drone_types.FPS30)
         self.write_vid = write_vid

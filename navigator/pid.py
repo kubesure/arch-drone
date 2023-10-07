@@ -31,7 +31,7 @@ def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello):
     while True:
         # get current x y from detection
         current_ring = ring
-        rings = plotter.plot(True, True, inn.duration, inn.ring, drone)
+        rings = plotter.plot(True, True, inn.duration, inn.ring_color, drone)
         new_ring = utils.get_avg_distance(rings)
 
         set_point_x = current_ring.x

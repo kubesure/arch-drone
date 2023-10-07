@@ -23,7 +23,7 @@ def hover_and_detect_avg_distance(inn: NavigatorInput, dronee, cap_read_write) -
         drone_hover.join()
         if attempts == 1:
             break
-    return utils.get_avg_distance(rings_detected, inn)
+    return utils.get_short_or_longest_distance(rings_detected,False)
 
 
 # TODO add exception handling
@@ -31,14 +31,14 @@ if __name__ == '__main__':
     drone = Tello()
 
     try:
-        ring_sequence = [RingColor.YELLOW, RingColor.YELLOW]
+        ring_sequence = [RingColor.YELLOW, RingColor.YELLOW, RingColor.YELLOW]
         config = config_loader.get_configurations()
         drone.connect()
         drone.streamoff()
         drone.streamon()
         cap_reader_writer = utils.Cv2CapReaderWriter()
         logger.info(f"battery percentage - {drone.get_battery()}")
-        if drone.get_battery() < 40:
+        if drone.get_battery() < 50:
             logger.info(f"battery less than 50% will cause issues flight re-charge")
             drone.end()
         else:
@@ -49,15 +49,15 @@ if __name__ == '__main__':
             q = queue.Queue()
             last_ring_navigated = Ring(x=0, y=0, z=0, area=0, color=RingColor.YELLOW)
             for ring in ring_sequence:
-                fly_input = NavigatorInput(ring_color=ring,
-                                           config=config,
-                                           q=q,
-                                           duration=4,
-                                           last_ring_navigated=last_ring_navigated)
-                detected, ring = hover_and_detect_avg_distance(fly_input, drone, cap_reader_writer)
+                flight_input = NavigatorInput(ring_color=ring,
+                                              config=config,
+                                              q=q,
+                                              duration=4,
+                                              last_ring_navigated=last_ring_navigated)
+                detected, ring = hover_and_detect_avg_distance(flight_input, drone, cap_reader_writer)
                 if detected:
                     logger.info(f"ring detected navigate to {ring}")
-                    navigated, last_navigated_ring = simple.navigate_to(fly_input, ring, drone, cap_reader_writer)
+                    navigated, last_navigated_ring = simple.navigate_to(flight_input, ring, drone, cap_reader_writer)
             cap_reader_writer.release()
             drone.end()
     except DroneException as de:
@@ -65,7 +65,7 @@ if __name__ == '__main__':
         drone.end()
     except KeyboardInterrupt:
         logger.error("Ctrl+C pressed or process killed. Signalling main thread to land drone in emergency")
-        drone.emergency()
+        drone.end()
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
-        drone.end()
+        drone.emergency()

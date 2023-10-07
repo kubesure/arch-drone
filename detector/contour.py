@@ -54,7 +54,7 @@ class ContourFilter:
             area = cv2.contourArea(cnt)
             areaMin = 0
             if ring == RingColor.RED:
-                areaMin = 3500
+                areaMin = 12000
             elif ring == RingColor.YELLOW:
                 areaMin = 7000
 

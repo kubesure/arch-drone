@@ -10,7 +10,7 @@ while True:
     r, frame = cl.get_xyz_ring(img, RingColor.YELLOW)
     height, width, _ = frame.shape
     print(f"frame height {height} frame width {width}")
-    print(r.x, r.y, r.z, r.bounding_height, r.bounding_width)
+    print(r.x, r.y, r.z)
     cv2.imshow("Test", frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
