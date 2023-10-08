@@ -60,16 +60,17 @@ def get_avg_distance(rings) -> (bool, Ring):
 
     rings_to_consider = get_percentage_rings(rings, .50, True)
     logger.debug(f"total rings {len(rings)} rings considered for avg {len(rings_to_consider)}")
-
-    avg_x = int(sum(ring.x for ring in rings_to_consider) / len(rings_to_consider))
-    avg_y = int(sum(ring.y for ring in rings_to_consider) / len(rings_to_consider))
-    avg_z = int(sum(ring.z for ring in rings_to_consider) / len(rings_to_consider))
-    avg_area = int(sum(ring.area for ring in rings_to_consider) / len(rings_to_consider))
-    color_counts = Counter(ring.color for ring in rings_to_consider)
-    avg_color = color_counts.most_common(1)[0][0]
-    average_ring = Ring(x=avg_x, y=avg_y, z=avg_z, area=avg_area, color=avg_color)
-    logger.info(f"Returning the AVG ring {average_ring}")
-    return True, average_ring
+    if len(rings_to_consider) > 2:
+        avg_x = int(sum(ring.x for ring in rings_to_consider) / len(rings_to_consider))
+        avg_y = int(sum(ring.y for ring in rings_to_consider) / len(rings_to_consider))
+        avg_z = int(sum(ring.z for ring in rings_to_consider) / len(rings_to_consider))
+        avg_area = int(sum(ring.area for ring in rings_to_consider) / len(rings_to_consider))
+        color_counts = Counter(ring.color for ring in rings_to_consider)
+        avg_color = color_counts.most_common(1)[0][0]
+        average_ring = Ring(x=avg_x, y=avg_y, z=avg_z, area=avg_area, color=avg_color)
+        logger.debug(f"Returning the AVG ring {average_ring}")
+        return True, average_ring
+    return False, None
 
 
 def get_composite_calc_rings(rings):

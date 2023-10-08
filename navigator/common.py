@@ -7,12 +7,12 @@ from arch_logger import logger
 
 
 def hover_at(inn: NavigatorInput, drone: Tello, attempt):
-    logger.info(f"attempt {attempt} on ring {inn.ring_color} with duration {inn.duration}")
+    logger.debug(f"attempt {attempt} on ring {inn.ring_color} with duration {inn.duration}")
 
     # TODO write exception handling since its a thread inform main thread
 
-    y_direction, y_movement = get_optimum_hover_height(drone, inn)
     if attempt != 4:
+        y_direction, y_movement = get_optimum_hover_height(drone, inn)
         move_to_y(drone, inn, y_direction, y_movement)
     hover_time(2)
 
@@ -42,7 +42,7 @@ def get_optimum_hover_height(drone, inn):
         elif drone_height < red_height:
             y_direction = Direction.UP
             y_movement = abs(drone_height - red_height)
-        logger.info(f"y_direction {y_direction} y_movement {y_movement} ring {inn.ring_color}")
+        logger.debug(f"y_direction {y_direction} y_movement {y_movement} ring {inn.ring_color}")
     elif inn.ring_color == RingColor.YELLOW:
         logger.info(f" yellow height {yellow_height} drone height {drone_height}")
         y_movement = yellow_height
@@ -54,7 +54,7 @@ def get_optimum_hover_height(drone, inn):
             y_movement = abs(drone_height - yellow_height)
         elif drone_height == yellow_height:
             y_direction = Direction.HOVER
-        logger.info(f"y_direction {y_direction} y_movement {y_movement} ring {inn.ring_color}")
+        logger.debug(f"y_direction {y_direction} y_movement {y_movement} ring {inn.ring_color}")
     return y_direction, y_movement
 
 
@@ -63,11 +63,13 @@ def move_to_y(drone, inn, y_direction, y_movement):
     if y_direction == Direction.UP:
         logger.info(f"moving up {y_movement} ring {inn.ring_color}")
         if y_movement > threshold:
-            drone.move_up(y_movement)
+            # drone.move_up(y_movement)
+            pass
     elif y_direction == Direction.DOWN:
         logger.info(f"moving down {y_movement} ring {inn.ring_color}")
         if y_movement > threshold:
-            drone.move_down(y_movement)
+            # drone.move_down(y_movement)
+            pass
     elif y_direction == Direction.HOVER:
         logger.info(f"hovering at height {drone.get_height()}")
 

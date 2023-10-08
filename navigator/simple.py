@@ -12,36 +12,34 @@ import time
 
 def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello, cap_reader_writer) -> (bool, Ring):
     logger.info(f"navigating to ring {inn.ring_color} at position {inn.ring_position}")
-    # speed = constants.speed
-    # drone.set_speed(speed)
     hover_time(1)
+    if inn.ring_position == 0:
+        logger.info(f"doing correction for ring position {inn.ring_position}")
+        do_x_correction(cap_reader_writer, drone, inn, ring)
     distance_to_travel = ring.z + 15
     logger.info(f"moving forward -- {distance_to_travel}")
-    if inn.ring_position != 0:
-        do_x_correction(cap_reader_writer, drone, inn, ring)
     drone.move_forward(distance_to_travel)
-    hover_time(1)
+    # hover_time(1)
     do_x_correction(cap_reader_writer, drone, inn, ring)
     return True, ring
 
 
-def do_x_correction(cap_reader_writer, drone, inn, ring):
+def do_x_correction(cap_reader_writer, drone, inn, ring) -> Ring:
     x_direction, x_movement, next_ring = corrected_x(inn, ring, drone, cap_reader_writer)
-    logger.info(f"direction received for correction {x_direction} x movement {x_movement}")
-    if x_direction != Direction.CENTER:
-        if x_movement > 0 and x_direction == Direction.RIGHT:
-            logger.info(f"moving to corrected x ---- {x_movement} direction {x_direction}")
-            drone.move_right(x_movement)
-            hover_time(2)
-        if x_movement > 0 and x_direction == Direction.LEFT:
-            logger.info(f"moving to corrected x ---- {x_movement} direction {x_direction}")
-            drone.move_left(x_movement)
-            hover_time(2)
+    logger.info(f"moving {x_movement} {x_direction} for ring {inn.ring_position}")
+    if x_direction == Direction.RIGHT:
+        drone.move_right(x_movement)
+        hover_time(2)
+        return next_ring
+    if x_direction == Direction.LEFT:
+        drone.move_left(x_movement)
+        hover_time(2)
+        return next_ring
+    return ring
 
 
 # calculate x with new detection and determine corrected x
 def corrected_x(inn: NavigatorInput, set_ring, drone, cap_read_writer) -> (Direction, int, Ring):
-    direction_to_go = Direction.CENTER
     right_left_threshold = constants.right_left_threshold
     inn.duration = 2
     attempts = 4
@@ -51,23 +49,26 @@ def corrected_x(inn: NavigatorInput, set_ring, drone, cap_read_writer) -> (Direc
     rings_detected = plotter.plot(inn, cap_read_writer)
     drone_hover.join()
 
-    logger.debug(f"set ring -- {set_ring} for correction")
+    logger.info(f"set ring -- {set_ring} for correction")
     detected, new_ring = utils.get_composite_calc_rings(rings_detected)
-    logger.debug(f"new ring {detected}")
+    logger.info(f"new ring {detected}")
     if detected:
-        logger.debug(f"new ring in -- {new_ring} for correction")
+        logger.info(f"new ring -- {new_ring} for correction")
         deviation_x = new_ring.x - set_ring.x
         logger.info(f"deviation x ---- {deviation_x}")
+        direction_to_go = get_left_right_direction(deviation_x, right_left_threshold)
+        return direction_to_go, deviation_x, new_ring
+    return Direction.CENTER, deviation_x, new_ring
 
-        if 0 > deviation_x > -abs(right_left_threshold):
-            direction_to_go = Direction.RIGHT
-            logger.info(f"difference in set x and new ring is {deviation_x} moving to {direction_to_go}")
-        elif 0 < deviation_x > right_left_threshold:
-            direction_to_go = Direction.LEFT
-            logger.info(f"difference in set x and new ring {deviation_x} moving to {direction_to_go}")
-    else:
-        logger.info(f"no new rings detected for x deviation correction")
-    return direction_to_go, deviation_x, new_ring
+
+def get_left_right_direction(deviation_x, right_left_threshold) -> Direction:
+    if 0 > deviation_x < -abs(right_left_threshold):
+        logger.debug(f"difference in set x and new ring is {deviation_x} moving to {Direction.LEFT}")
+        return Direction.LEFT
+    elif 0 < deviation_x > right_left_threshold:
+        logger.debug(f"difference in set x and new ring {deviation_x} moving to {Direction.RIGHT}")
+        return Direction.RIGHT
+    return Direction.CENTER
 
 
 def move_left_for_distance(drone, distance_cm):
