@@ -32,6 +32,7 @@ class Direction(Enum):
     FORWARD = 6
     BACKWARD = 7
     CENTER = 8
+    STOP = 9
 
 
 @dataclass
@@ -57,6 +58,7 @@ class NavigatorInput:
     q: queue.Queue
     duration: int
     last_ring_navigated: Ring
+    ring_position: int
 
 
 class DroneErrorCode(Enum):

@@ -6,6 +6,7 @@ from datetime import datetime
 from cv2 import VideoWriter
 from typing import List
 import drone_types
+import constants
 from arch_logger import logger
 
 
@@ -32,15 +33,13 @@ def filter_distance(rings, distance):
 
 
 def get_short_or_longest_distance(rings, longest) -> (bool, Ring):
-    logger.info(f"finding short of long ring out of rings {len(rings)}")
+    logger.debug(f"finding short of long ring out of rings {len(rings)}")
 
     rings = filter_zero_distances(rings)
-    logger.info(f"Ring for long short after filter {len(rings)}")
+    logger.debug(f"Ring for long short after filter {len(rings)}")
 
-    max_distance_btw_rings = 150
-    logger.info(f"max_distance_btw_rings in get avg distance {max_distance_btw_rings}")
-    rings = filter_distance(rings, max_distance_btw_rings)
-    logger.info(f"rings for percentage {rings}")
+    rings = filter_distance(rings, constants.max_distance_btw_rings)
+    logger.debug(f"rings for percentage {rings}")
 
     if len(rings) == 0:
         return False, None
@@ -48,22 +47,19 @@ def get_short_or_longest_distance(rings, longest) -> (bool, Ring):
     return True, sorted_rings[0]
 
 
-def get_avg_distance(rings, inn) -> (bool, Ring):
+def get_avg_distance(rings) -> (bool, Ring):
     # logger.info(f"Ring for average {len(rings)}")
 
     rings = filter_zero_distances(rings)
     # logger.info(f"Ring for average after zero filter {len(rings)}")
 
-    # max_distance_btw_rings = int(inn.config['max_distance_btw_rings'])
-    # logger.info(f"max_distance_btw_rings in get avg distance {max_distance_btw_rings}")
-    max_distance_btw_rings = 150
-
-    logger.info(f"max_distance_btw_rings in get avg distance {max_distance_btw_rings}")
+    max_distance_btw_rings = constants.max_distance_btw_rings
+    logger.debug(f"max_distance_btw_rings in get avg distance {max_distance_btw_rings}")
     rings = filter_distance(rings, max_distance_btw_rings)
-    logger.info(f"rings for percentage {rings}")
+    logger.debug(f"rings for percentage {rings}")
 
     rings_to_consider = get_percentage_rings(rings, .50, True)
-    logger.info(f"total rings {len(rings)} rings considered for avg {len(rings_to_consider)}")
+    logger.debug(f"total rings {len(rings)} rings considered for avg {len(rings_to_consider)}")
 
     avg_x = int(sum(ring.x for ring in rings_to_consider) / len(rings_to_consider))
     avg_y = int(sum(ring.y for ring in rings_to_consider) / len(rings_to_consider))
@@ -76,6 +72,15 @@ def get_avg_distance(rings, inn) -> (bool, Ring):
     return True, average_ring
 
 
+def get_composite_calc_rings(rings):
+    navigate_to_ring = get_short_or_longest_distance(rings, False)
+    if (len(navigate_to_ring)) == 0:
+        navigate_to_ring = get_avg_distance(rings)
+        if (len(navigate_to_ring)) == 0:
+            return False, navigate_to_ring
+    return navigate_to_ring
+
+
 def get_percentage_rings(rings, percent_to_discard, first_half):
     num_to_consider = int(len(rings) * (1 - percent_to_discard))
     if not first_half:
@@ -86,8 +91,8 @@ def get_percentage_rings(rings, percent_to_discard, first_half):
 
 class Cv2CapReaderWriter:
     def __init__(self, write_vid=True):
-        buffer = int(25 * 1024 * 1024)
-        buffer_str = str(buffer)
+        # buffer = int(25 * 1024 * 1024)
+        # buffer_str = str(buffer)
         self.drone_video_url = 'udp://@0.0.0.0:11111?overrun_nonfatal=1'
         self.cap = cv2.VideoCapture(self.drone_video_url)
         self.cap.set(cv2.CAP_PROP_FPS, drone_types.FPS30)
@@ -115,7 +120,7 @@ class Cv2CapReaderWriter:
 
         ret, frame = self.cap.read()
         if not ret:
-            logger.info("Error: Couldn't read a frame from video.")
+            logger.error("Error: Couldn't read a frame from video.")
             return None, None
         return ret, frame
 
@@ -139,7 +144,7 @@ class DJIFrameRead:
     def get_frame(self):
         ret, frame = self.frame_read.frame
         if not ret:
-            print("Error: Couldn't read a frame from video.")
+            logger.error("Error: Couldn't read a frame from video.")
             return None
         return frame
 

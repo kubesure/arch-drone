@@ -1,5 +1,7 @@
 import time
 from djitellopy import Tello
+
+import constants
 import plotter
 import utils
 from drone_types import NavigatorInput, Ring, RingColor
@@ -23,7 +25,7 @@ class PIDController:
 
 
 def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello):
-    forward_speed = int(inn.config['speed'])
+    forward_speed = constants.speed
 
     pid_x = PIDController(0, 0, 1)
     pid_y = PIDController(0, 0, 1)
@@ -31,7 +33,7 @@ def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello):
     while True:
         # get current x y from detection
         current_ring = ring
-        rings = plotter.plot(True, True, inn.duration, inn.ring_color, drone)
+        rings = plotter.plot(inn, utils.Cv2CapReaderWriter())
         new_ring = utils.get_avg_distance(rings)
 
         set_point_x = current_ring.x

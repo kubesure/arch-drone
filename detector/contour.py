@@ -16,8 +16,8 @@ class ContourFilter:
         upper = None
         known_width = 0
         if ring == RingColor.RED:
-            lower = np.array([0, 100, 70])
-            upper = np.array([5, 255, 160])
+            lower = np.array([0, 100, 100])
+            upper = np.array([5, 255, 255])
             known_width = 560
         elif ring == RingColor.YELLOW:
             lower = np.array([20, 100, 100])
@@ -54,7 +54,7 @@ class ContourFilter:
             area = cv2.contourArea(cnt)
             areaMin = 0
             if ring == RingColor.RED:
-                areaMin = 12000
+                areaMin = 18000
             elif ring == RingColor.YELLOW:
                 areaMin = 7000
 

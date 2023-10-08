@@ -2,9 +2,10 @@ from detector import contour
 import time
 import utils
 from arch_logger import logger
+from drone_types import NavigatorInput
 
 
-def plot(inn, cap_reader_writer):
+def plot(inn: NavigatorInput, cap_reader_writer):
     rings_detected = []
     detector = contour.ContourFilter()
     start_time = time.time()
@@ -18,12 +19,12 @@ def plot(inn, cap_reader_writer):
             if cap_reader_writer.is_writeable():
                 cap_reader_writer.write(frame)
 
-        # logger.info(f"Rings from detector {len(rings_detected)} - rings {rings_detected}")
+        logger.debug(f"Rings from detector {len(rings_detected)} - rings {rings_detected}")
         final_detected = []
         for r in rings_detected:
             if utils.ring_detected(r):
                 final_detected.append(r)
-        # logger.info(f"Final rings from plotter {len(final_detected)} - rings {final_detected}")
+        logger.debug(f"Final rings from plotter {len(final_detected)} - rings {final_detected}")
         return final_detected
     except Exception as e:
         logger.error(f"An error occurred in plotter: {str(e)}")
