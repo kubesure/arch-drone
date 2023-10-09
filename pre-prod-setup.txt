@@ -8,3 +8,8 @@ Tallest yellow ring to front
 Re check yellow alignment
 Turn on drone wait for yellow light to blink
 
+
+distance away from first rings 130
+
+distance away from edge of title to base of rod 13 cms
+

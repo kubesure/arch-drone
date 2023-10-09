@@ -33,7 +33,9 @@ if __name__ == '__main__':
     drone = Tello()
     cap_reader_writer: utils.Cv2CapReaderWriter
     try:
-        ring_sequence = [RingColor.YELLOW, RingColor.YELLOW, RingColor.YELLOW]
+        ring_sequence = [RingColor.RED, RingColor.YELLOW, RingColor.RED, RingColor.YELLOW, RingColor.RED,
+                         RingColor.YELLOW, RingColor.RED]
+
         config = config_loader.get_configurations()
         drone.connect()
         drone.streamoff()
@@ -47,16 +49,17 @@ if __name__ == '__main__':
             drone.takeoff()
             navigator.common.hover_time(1)
             drone.set_speed(constants.speed)
-            navigator.common.hover_time(2)
+            # navigator.common.hover_time(1)
             if not drone.is_flying:
                 raise DroneException("Take off error", DroneErrorCode.TakeOffError)
             q = queue.Queue()
             last_ring_navigated = Ring(x=0, y=0, z=0, area=0, color=RingColor.YELLOW)
             for index, ring in enumerate(ring_sequence):
+                logger.info(f"running sequence for ring {index}")
                 flight_input = NavigatorInput(ring_color=ring,
                                               config=config,
                                               q=q,
-                                              duration=3,
+                                              duration=2,
                                               last_ring_navigated=last_ring_navigated,
                                               ring_position=index)
                 detected, ring = hover_and_get_ring(flight_input, drone, cap_reader_writer)

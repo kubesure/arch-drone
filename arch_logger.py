@@ -22,6 +22,6 @@ logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
 tello_logger.addHandler(file_handler)
-# tello_logger.addHandler(console_handler)
+tello_logger.addHandler(console_handler)
 
 
