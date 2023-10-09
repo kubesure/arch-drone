@@ -51,11 +51,18 @@ class ContourFilter:
         area = 0
 
         for cnt in contours:
+            area = cv2.contourArea(cnt)
+            areaMin = 0
+            if ring == RingColor.RED:
+                areaMin = 18000
+            elif ring == RingColor.YELLOW:
+                areaMin = 7000
+
             epsilon = 0.02 * cv2.arcLength(cnt, closure_curve)
             approx = cv2.approxPolyDP(cnt, epsilon, closure_curve)
 
-            if len(approx) > 12:
-                x, y, bounding_rect_width, bounding_rect_height = cv2.boundingRect(cnt)
+            if area > areaMin and len(approx) > 4:
+                x, y, bounding_rect_width, bounding_rect_height = cv2.boundingRect(approx)
                 center_x = int(x + (bounding_rect_width / 2))  # CENTER X OF THE OBJECT
                 center_y = int(y + (bounding_rect_height / 2))  # CENTER y OF THE OBJECT
                 distance = self.distance_to_camera(known_width, focal_length, bounding_rect_width)
