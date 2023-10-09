@@ -1,0 +1,241 @@
+[INFO] tello.py - 122 - Tello instance was initialized. Host: '192.168.10.1'. Port: '8889'.
+[2023-10-09 20:19:10,317] [INFO] tello.py - 122 - Tello instance was initialized. Host: '192.168.10.1'. Port: '8889'.
+[INFO] tello.py - 437 - Send command: 'command'
+[2023-10-09 20:19:10,321] [INFO] tello.py - 437 - Send command: 'command'
+[INFO] tello.py - 461 - Response command: 'ok'
+[2023-10-09 20:19:10,430] [INFO] tello.py - 461 - Response command: 'ok'
+[INFO] tello.py - 437 - Send command: 'streamoff'
+[2023-10-09 20:19:10,430] [INFO] tello.py - 437 - Send command: 'streamoff'
+[INFO] tello.py - 461 - Response streamoff: 'ok'
+[2023-10-09 20:19:10,532] [INFO] tello.py - 461 - Response streamoff: 'ok'
+[INFO] tello.py - 437 - Send command: 'streamon'
+[2023-10-09 20:19:10,533] [INFO] tello.py - 437 - Send command: 'streamon'
+[INFO] tello.py - 461 - Response streamon: 'ok'
+[2023-10-09 20:19:10,637] [INFO] tello.py - 461 - Response streamon: 'ok'
+[h264 @ 0x12f830b30] non-existing PPS 0 referenced
+[h264 @ 0x12f830b30] non-existing PPS 0 referenced
+[h264 @ 0x12f830b30] decode_slice_header error
+[h264 @ 0x12f830b30] no frame!
+[h264 @ 0x12f830b30] non-existing PPS 0 referenced
+[h264 @ 0x12f830b30] non-existing PPS 0 referenced
+[h264 @ 0x12f830b30] decode_slice_header error
+[h264 @ 0x12f830b30] no frame!
+[h264 @ 0x12f830b30] non-existing PPS 0 referenced
+[h264 @ 0x12f830b30] non-existing PPS 0 referenced
+[h264 @ 0x12f830b30] decode_slice_header error
+[h264 @ 0x12f830b30] no frame!
+[h264 @ 0x12f830b30] non-existing PPS 0 referenced
+[h264 @ 0x12f830b30] non-existing PPS 0 referenced
+[h264 @ 0x12f830b30] decode_slice_header error
+[h264 @ 0x12f830b30] no frame!
+[h264 @ 0x12f830b30] non-existing PPS 0 referenced
+[h264 @ 0x12f830b30] non-existing PPS 0 referenced
+[h264 @ 0x12f830b30] decode_slice_header error
+[h264 @ 0x12f830b30] no frame!
+[2023-10-09 20:19:15,005] [INFO] launch.py - 44 - battery percentage - 100
+[INFO] tello.py - 437 - Send command: 'takeoff'
+[2023-10-09 20:19:15,005] [INFO] tello.py - 437 - Send command: 'takeoff'
+[INFO] tello.py - 461 - Response takeoff: 'ok'
+[2023-10-09 20:19:19,145] [INFO] tello.py - 461 - Response takeoff: 'ok'
+[2023-10-09 20:19:19,146] [INFO] common.py - 86 - hovering for duration 1
+[INFO] tello.py - 437 - Send command: 'speed 20'
+[2023-10-09 20:19:20,151] [INFO] tello.py - 437 - Send command: 'speed 20'
+[INFO] tello.py - 461 - Response speed 20: 'ok'
+[2023-10-09 20:19:20,257] [INFO] tello.py - 461 - Response speed 20: 'ok'
+[2023-10-09 20:19:20,258] [INFO] launch.py - 58 - running sequence for ring 0
+[2023-10-09 20:19:20,259] [INFO] common.py - 47 -  yellow height 85 drone height 60
+[2023-10-09 20:19:20,259] [INFO] common.py - 64 - moving up 25 ring RingColor.YELLOW
+[INFO] tello.py - 437 - Send command: 'up 25'
+[2023-10-09 20:19:20,263] [INFO] tello.py - 437 - Send command: 'up 25'
+[INFO] tello.py - 461 - Response up 25: 'ok'
+[2023-10-09 20:19:22,558] [INFO] tello.py - 461 - Response up 25: 'ok'
+[2023-10-09 20:19:22,558] [INFO] common.py - 86 - hovering for duration 2
+[2023-10-09 20:19:24,570] [INFO] launch.py - 67 - ring detected navigate to Ring(y=110, x=37, z=135, area=12879, color=<RingColor.YELLOW: 1>)
+[2023-10-09 20:19:24,571] [INFO] simple.py - 52 - navigating to ring RingColor.YELLOW at position 0
+[2023-10-09 20:19:24,571] [INFO] common.py - 86 - hovering for duration 1
+[2023-10-09 20:19:25,576] [INFO] simple.py - 60 - moving forward -- 150
+[INFO] tello.py - 437 - Send command: 'forward 150'
+[2023-10-09 20:19:25,577] [INFO] tello.py - 437 - Send command: 'forward 150'
+[WARNING] tello.py - 447 - Aborting command 'forward 150'. Did not receive a response after 7 seconds
+[2023-10-09 20:19:32,612] [WARNING] tello.py - 447 - Aborting command 'forward 150'. Did not receive a response after 7 seconds
+[INFO] tello.py - 437 - Send command: 'forward 150'
+[2023-10-09 20:19:32,613] [INFO] tello.py - 437 - Send command: 'forward 150'
+[INFO] tello.py - 461 - Response forward 150: 'ok'
+[2023-10-09 20:19:33,651] [INFO] tello.py - 461 - Response forward 150: 'ok'
+[2023-10-09 20:19:35,654] [INFO] simple.py - 92 - set ring -- Ring(y=110, x=37, z=135, area=12879, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:19:35,654] [INFO] simple.py - 94 - new ring True
+[2023-10-09 20:19:35,654] [INFO] simple.py - 96 - new ring -- Ring(y=262, x=45, z=84, area=26465.0, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:19:35,654] [INFO] simple.py - 98 - deviation x ---- -8
+[2023-10-09 20:19:35,654] [INFO] simple.py - 106 - difference in set x and new ring is -8 moving to Direction.LEFT
+[2023-10-09 20:19:35,654] [INFO] simple.py - 69 - moving -8 Direction.LEFT for ring 0
+[2023-10-09 20:19:35,654] [INFO] simple.py - 35 - velocity 20
+[2023-10-09 20:19:35,655] [INFO] simple.py - 38 - rc command Direction.LEFT
+[INFO] tello.py - 470 - Send command (no response expected): 'rc -20 0 0 0'
+[2023-10-09 20:19:35,655] [INFO] tello.py - 470 - Send command (no response expected): 'rc -20 0 0 0'
+[2023-10-09 20:19:35,655] [INFO] simple.py - 40 - sleep time 0.4
+[INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:19:36,060] [INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:19:36,060] [INFO] launch.py - 58 - running sequence for ring 1
+[2023-10-09 20:19:36,061] [INFO] common.py - 47 -  yellow height 85 drone height 80
+[2023-10-09 20:19:36,061] [INFO] common.py - 64 - moving up 5 ring RingColor.YELLOW
+[2023-10-09 20:19:36,061] [INFO] common.py - 86 - hovering for duration 2
+[2023-10-09 20:19:38,071] [INFO] launch.py - 67 - ring detected navigate to Ring(y=264, x=44, z=75, area=32283, color=<RingColor.YELLOW: 1>)
+[2023-10-09 20:19:38,072] [INFO] simple.py - 52 - navigating to ring RingColor.YELLOW at position 1
+[2023-10-09 20:19:38,072] [INFO] common.py - 86 - hovering for duration 1
+[2023-10-09 20:19:39,077] [INFO] simple.py - 60 - moving forward -- 90
+[INFO] tello.py - 437 - Send command: 'forward 90'
+[2023-10-09 20:19:39,078] [INFO] tello.py - 437 - Send command: 'forward 90'
+[INFO] tello.py - 461 - Response forward 90: 'ok'
+[2023-10-09 20:19:43,873] [INFO] tello.py - 461 - Response forward 90: 'ok'
+[2023-10-09 20:19:45,899] [INFO] simple.py - 92 - set ring -- Ring(y=264, x=44, z=75, area=32283, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:19:45,899] [INFO] simple.py - 94 - new ring True
+[2023-10-09 20:19:45,899] [INFO] simple.py - 96 - new ring -- Ring(y=248, x=50, z=55, area=7730.5, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:19:45,899] [INFO] simple.py - 98 - deviation x ---- -6
+[2023-10-09 20:19:45,899] [INFO] simple.py - 106 - difference in set x and new ring is -6 moving to Direction.LEFT
+[2023-10-09 20:19:45,899] [INFO] simple.py - 69 - moving -6 Direction.LEFT for ring 1
+[2023-10-09 20:19:45,899] [INFO] simple.py - 35 - velocity 20
+[2023-10-09 20:19:45,899] [INFO] simple.py - 38 - rc command Direction.LEFT
+[INFO] tello.py - 470 - Send command (no response expected): 'rc -20 0 0 0'
+[2023-10-09 20:19:45,900] [INFO] tello.py - 470 - Send command (no response expected): 'rc -20 0 0 0'
+[2023-10-09 20:19:45,900] [INFO] simple.py - 40 - sleep time 0.3
+[INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:19:46,205] [INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:19:46,205] [INFO] launch.py - 58 - running sequence for ring 2
+[2023-10-09 20:19:46,206] [INFO] common.py - 47 -  yellow height 85 drone height 90
+[2023-10-09 20:19:46,206] [INFO] common.py - 69 - moving down 5 ring RingColor.YELLOW
+[2023-10-09 20:19:46,206] [INFO] common.py - 86 - hovering for duration 2
+[2023-10-09 20:19:48,229] [INFO] launch.py - 67 - ring detected navigate to Ring(y=275, x=49, z=55, area=7861, color=<RingColor.YELLOW: 1>)
+[2023-10-09 20:19:48,230] [INFO] simple.py - 52 - navigating to ring RingColor.YELLOW at position 2
+[2023-10-09 20:19:48,230] [INFO] common.py - 86 - hovering for duration 1
+[2023-10-09 20:19:49,235] [INFO] simple.py - 60 - moving forward -- 70
+[INFO] tello.py - 437 - Send command: 'forward 70'
+[2023-10-09 20:19:49,236] [INFO] tello.py - 437 - Send command: 'forward 70'
+[INFO] tello.py - 461 - Response forward 70: 'ok'
+[2023-10-09 20:19:52,963] [INFO] tello.py - 461 - Response forward 70: 'ok'
+[2023-10-09 20:19:54,997] [INFO] simple.py - 92 - set ring -- Ring(y=275, x=49, z=55, area=7861, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:19:54,997] [INFO] simple.py - 94 - new ring True
+[2023-10-09 20:19:54,997] [INFO] simple.py - 96 - new ring -- Ring(y=238, x=48, z=53, area=7872.5, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:19:54,997] [INFO] simple.py - 98 - deviation x ---- 1
+[2023-10-09 20:19:54,997] [INFO] simple.py - 109 - difference in set x and new ring 1 moving to Direction.RIGHT
+[2023-10-09 20:19:54,997] [INFO] simple.py - 69 - moving 1 Direction.RIGHT for ring 2
+[2023-10-09 20:19:54,997] [INFO] simple.py - 35 - velocity 20
+[2023-10-09 20:19:54,997] [INFO] simple.py - 44 - rc command Direction.RIGHT
+[INFO] tello.py - 470 - Send command (no response expected): 'rc 20 0 0 0'
+[2023-10-09 20:19:54,997] [INFO] tello.py - 470 - Send command (no response expected): 'rc 20 0 0 0'
+[2023-10-09 20:19:54,997] [INFO] simple.py - 46 - sleep time 0.05
+[INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:19:55,052] [INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:19:55,054] [INFO] launch.py - 58 - running sequence for ring 3
+[2023-10-09 20:19:55,054] [INFO] common.py - 47 -  yellow height 85 drone height 90
+[2023-10-09 20:19:55,054] [INFO] common.py - 69 - moving down 5 ring RingColor.YELLOW
+[2023-10-09 20:19:55,054] [INFO] common.py - 86 - hovering for duration 2
+[2023-10-09 20:19:57,069] [INFO] launch.py - 67 - ring detected navigate to Ring(y=375, x=30, z=84, area=28364, color=<RingColor.YELLOW: 1>)
+[2023-10-09 20:19:57,069] [INFO] simple.py - 52 - navigating to ring RingColor.YELLOW at position 3
+[2023-10-09 20:19:57,069] [INFO] common.py - 86 - hovering for duration 1
+[2023-10-09 20:19:58,074] [INFO] simple.py - 60 - moving forward -- 99
+[INFO] tello.py - 437 - Send command: 'forward 99'
+[2023-10-09 20:19:58,075] [INFO] tello.py - 437 - Send command: 'forward 99'
+[INFO] tello.py - 461 - Response forward 99: 'ok'
+[2023-10-09 20:20:03,145] [INFO] tello.py - 461 - Response forward 99: 'ok'
+[h264 @ 0x11e711f20] error while decoding MB 35 40, bytestream -5
+[h264 @ 0x11e711f20] error while decoding MB 49 39, bytestream -6
+[2023-10-09 20:20:05,164] [INFO] simple.py - 92 - set ring -- Ring(y=375, x=30, z=84, area=28364, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:20:05,165] [INFO] simple.py - 94 - new ring True
+[2023-10-09 20:20:05,165] [INFO] simple.py - 96 - new ring -- Ring(y=311, x=58, z=67, area=18619.5, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:20:05,165] [INFO] simple.py - 98 - deviation x ---- -28
+[2023-10-09 20:20:05,165] [INFO] simple.py - 106 - difference in set x and new ring is -28 moving to Direction.LEFT
+[2023-10-09 20:20:05,165] [INFO] simple.py - 69 - moving -28 Direction.LEFT for ring 3
+[2023-10-09 20:20:05,165] [INFO] simple.py - 35 - velocity 20
+[2023-10-09 20:20:05,165] [INFO] simple.py - 38 - rc command Direction.LEFT
+[INFO] tello.py - 470 - Send command (no response expected): 'rc -20 0 0 0'
+[2023-10-09 20:20:05,165] [INFO] tello.py - 470 - Send command (no response expected): 'rc -20 0 0 0'
+[2023-10-09 20:20:05,165] [INFO] simple.py - 40 - sleep time 1.4
+[INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:20:06,570] [INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:20:06,573] [INFO] launch.py - 58 - running sequence for ring 4
+[2023-10-09 20:20:06,574] [INFO] common.py - 47 -  yellow height 85 drone height 90
+[2023-10-09 20:20:06,575] [INFO] common.py - 69 - moving down 5 ring RingColor.YELLOW
+[2023-10-09 20:20:06,575] [INFO] common.py - 86 - hovering for duration 2
+[2023-10-09 20:20:08,597] [INFO] launch.py - 67 - ring detected navigate to Ring(y=158, x=43, z=144, area=15568, color=<RingColor.YELLOW: 1>)
+[2023-10-09 20:20:08,597] [INFO] simple.py - 52 - navigating to ring RingColor.YELLOW at position 4
+[2023-10-09 20:20:08,597] [INFO] common.py - 86 - hovering for duration 1
+[2023-10-09 20:20:09,602] [INFO] simple.py - 60 - moving forward -- 159
+[INFO] tello.py - 437 - Send command: 'forward 159'
+[2023-10-09 20:20:09,603] [INFO] tello.py - 437 - Send command: 'forward 159'
+[WARNING] tello.py - 447 - Aborting command 'forward 159'. Did not receive a response after 7 seconds
+[2023-10-09 20:20:16,645] [WARNING] tello.py - 447 - Aborting command 'forward 159'. Did not receive a response after 7 seconds
+[INFO] tello.py - 437 - Send command: 'forward 159'
+[2023-10-09 20:20:16,646] [INFO] tello.py - 437 - Send command: 'forward 159'
+[INFO] tello.py - 461 - Response forward 159: 'ok'
+[2023-10-09 20:20:17,679] [INFO] tello.py - 461 - Response forward 159: 'ok'
+[2023-10-09 20:20:19,682] [INFO] simple.py - 92 - set ring -- Ring(y=158, x=43, z=144, area=15568, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:20:19,683] [INFO] simple.py - 94 - new ring True
+[2023-10-09 20:20:19,683] [INFO] simple.py - 96 - new ring -- Ring(y=274, x=48, z=53, area=30901.5, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:20:19,683] [INFO] simple.py - 98 - deviation x ---- -5
+[2023-10-09 20:20:19,683] [INFO] simple.py - 106 - difference in set x and new ring is -5 moving to Direction.LEFT
+[2023-10-09 20:20:19,683] [INFO] simple.py - 69 - moving -5 Direction.LEFT for ring 4
+[2023-10-09 20:20:19,683] [INFO] simple.py - 35 - velocity 20
+[2023-10-09 20:20:19,683] [INFO] simple.py - 38 - rc command Direction.LEFT
+[INFO] tello.py - 470 - Send command (no response expected): 'rc -20 0 0 0'
+[2023-10-09 20:20:19,683] [INFO] tello.py - 470 - Send command (no response expected): 'rc -20 0 0 0'
+[2023-10-09 20:20:19,683] [INFO] simple.py - 40 - sleep time 0.25
+[INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:20:19,938] [INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:20:19,938] [INFO] launch.py - 58 - running sequence for ring 5
+[2023-10-09 20:20:19,939] [INFO] common.py - 47 -  yellow height 85 drone height 80
+[2023-10-09 20:20:19,939] [INFO] common.py - 64 - moving up 5 ring RingColor.YELLOW
+[2023-10-09 20:20:19,939] [INFO] common.py - 86 - hovering for duration 2
+[2023-10-09 20:20:21,966] [INFO] launch.py - 67 - ring detected navigate to Ring(y=231, x=49, z=60, area=16510, color=<RingColor.YELLOW: 1>)
+[2023-10-09 20:20:21,966] [INFO] simple.py - 52 - navigating to ring RingColor.YELLOW at position 5
+[2023-10-09 20:20:21,966] [INFO] common.py - 86 - hovering for duration 1
+[2023-10-09 20:20:22,972] [INFO] simple.py - 60 - moving forward -- 75
+[INFO] tello.py - 437 - Send command: 'forward 75'
+[2023-10-09 20:20:22,973] [INFO] tello.py - 437 - Send command: 'forward 75'
+[INFO] tello.py - 461 - Response forward 75: 'ok'
+[2023-10-09 20:20:27,113] [INFO] tello.py - 461 - Response forward 75: 'ok'
+[2023-10-09 20:20:29,132] [INFO] simple.py - 92 - set ring -- Ring(y=231, x=49, z=60, area=16510, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:20:29,132] [INFO] simple.py - 94 - new ring True
+[2023-10-09 20:20:29,132] [INFO] simple.py - 96 - new ring -- Ring(y=315, x=48, z=53, area=13755.5, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:20:29,132] [INFO] simple.py - 98 - deviation x ---- 1
+[2023-10-09 20:20:29,132] [INFO] simple.py - 109 - difference in set x and new ring 1 moving to Direction.RIGHT
+[2023-10-09 20:20:29,132] [INFO] simple.py - 69 - moving 1 Direction.RIGHT for ring 5
+[2023-10-09 20:20:29,132] [INFO] simple.py - 35 - velocity 20
+[2023-10-09 20:20:29,132] [INFO] simple.py - 44 - rc command Direction.RIGHT
+[INFO] tello.py - 470 - Send command (no response expected): 'rc 20 0 0 0'
+[2023-10-09 20:20:29,133] [INFO] tello.py - 470 - Send command (no response expected): 'rc 20 0 0 0'
+[2023-10-09 20:20:29,133] [INFO] simple.py - 46 - sleep time 0.05
+[INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:20:29,188] [INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:20:29,188] [INFO] launch.py - 58 - running sequence for ring 6
+[2023-10-09 20:20:29,188] [INFO] common.py - 47 -  yellow height 85 drone height 90
+[2023-10-09 20:20:29,188] [INFO] common.py - 69 - moving down 5 ring RingColor.YELLOW
+[2023-10-09 20:20:29,188] [INFO] common.py - 86 - hovering for duration 2
+[2023-10-09 20:20:31,196] [INFO] launch.py - 67 - ring detected navigate to Ring(y=280, x=38, z=89, area=22133, color=<RingColor.YELLOW: 1>)
+[2023-10-09 20:20:31,196] [INFO] simple.py - 52 - navigating to ring RingColor.YELLOW at position 6
+[2023-10-09 20:20:31,196] [INFO] common.py - 86 - hovering for duration 1
+[2023-10-09 20:20:32,201] [INFO] simple.py - 60 - moving forward -- 104
+[INFO] tello.py - 437 - Send command: 'forward 104'
+[2023-10-09 20:20:32,202] [INFO] tello.py - 437 - Send command: 'forward 104'
+[INFO] tello.py - 461 - Response forward 104: 'ok'
+[2023-10-09 20:20:37,596] [INFO] tello.py - 461 - Response forward 104: 'ok'
+[2023-10-09 20:20:39,629] [INFO] simple.py - 92 - set ring -- Ring(y=280, x=38, z=89, area=22133, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:20:39,629] [INFO] simple.py - 94 - new ring True
+[2023-10-09 20:20:39,629] [INFO] simple.py - 96 - new ring -- Ring(y=277, x=48, z=53, area=33895.0, color=<RingColor.YELLOW: 1>) for correction
+[2023-10-09 20:20:39,629] [INFO] simple.py - 98 - deviation x ---- -10
+[2023-10-09 20:20:39,629] [INFO] simple.py - 106 - difference in set x and new ring is -10 moving to Direction.LEFT
+[2023-10-09 20:20:39,629] [INFO] simple.py - 69 - moving -10 Direction.LEFT for ring 6
+[2023-10-09 20:20:39,629] [INFO] simple.py - 35 - velocity 20
+[2023-10-09 20:20:39,629] [INFO] simple.py - 38 - rc command Direction.LEFT
+[INFO] tello.py - 470 - Send command (no response expected): 'rc -20 0 0 0'
+[2023-10-09 20:20:39,629] [INFO] tello.py - 470 - Send command (no response expected): 'rc -20 0 0 0'
+[2023-10-09 20:20:39,629] [INFO] simple.py - 40 - sleep time 0.5
+[INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[2023-10-09 20:20:40,135] [INFO] tello.py - 470 - Send command (no response expected): 'rc 0 0 0 0'
+[INFO] tello.py - 437 - Send command: 'land'
+[2023-10-09 20:20:40,145] [INFO] tello.py - 437 - Send command: 'land'
+[INFO] tello.py - 461 - Response land: 'ok'
+[2023-10-09 20:20:42,923] [INFO] tello.py - 461 - Response land: 'ok'
+[INFO] tello.py - 437 - Send command: 'streamoff'
+[2023-10-09 20:20:42,925] [INFO] tello.py - 437 - Send command: 'streamoff'
+[INFO] tello.py - 461 - Response streamoff: 'ok'
+[2023-10-09 20:20:43,028] [INFO] tello.py - 461 - Response streamoff: 'ok'
