@@ -25,7 +25,7 @@ def hover_and_get_ring(inn: NavigatorInput, dronee, cap_read_write) -> (bool, Ri
         drone_hover.join()
         if attempts == 1:
             break
-    return utils.get_composite_calc_rings(rings_detected)
+    return utils.get_avg_distance(rings_detected)
 
 
 # TODO add exception handling
@@ -33,14 +33,14 @@ if __name__ == '__main__':
     drone = Tello()
     cap_reader_writer: utils.Cv2CapReaderWriter
     try:
-        ring_sequence = [RingColor.RED, RingColor.YELLOW, RingColor.YELLOW]
+        ring_sequence = [RingColor.YELLOW, RingColor.YELLOW, RingColor.YELLOW]
         config = config_loader.get_configurations()
         drone.connect()
         drone.streamoff()
         drone.streamon()
         cap_reader_writer = utils.Cv2CapReaderWriter()
         logger.info(f"battery percentage - {drone.get_battery()}")
-        if drone.get_battery() < 50:
+        if drone.get_battery() < 80:
             logger.info(f"battery less than 50% will cause issues flight re-charge")
             drone.end()
         else:
@@ -72,9 +72,9 @@ if __name__ == '__main__':
         cap_reader_writer.release()
         drone.end()
     except KeyboardInterrupt:
-        logger.error("Ctrl+C pressed or process killed. Signalling main thread to land drone in emergency")
+        logger.error("Ctrl+C pressed landing or emergency land")
         cap_reader_writer.release()
-        drone.emergency()
+        drone.end()
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
         cap_reader_writer.release()
