@@ -4,6 +4,7 @@ from djitellopy import Tello
 import constants
 from drone_types import NavigatorInput, Direction, RingColor
 from arch_logger import logger
+from navigator.simple import adjust_drone_position_y
 
 
 def hover_at(inn: NavigatorInput, drone: Tello, attempt):
@@ -63,13 +64,11 @@ def move_to_y(drone, inn, y_direction, y_movement):
     if y_direction == Direction.UP:
         logger.info(f"moving up {y_movement} ring {inn.ring_color}")
         if y_movement > threshold:
-            drone.move_up(y_movement)
-            pass
+            adjust_drone_position_y(drone, y_movement, y_direction)
     elif y_direction == Direction.DOWN:
         logger.info(f"moving down {y_movement} ring {inn.ring_color}")
         if y_movement > threshold:
-            drone.move_down(y_movement)
-            pass
+            adjust_drone_position_y(drone, y_movement, y_direction)
     elif y_direction == Direction.HOVER:
         logger.info(f"hovering at height {drone.get_height()}")
 

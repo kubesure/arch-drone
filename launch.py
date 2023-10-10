@@ -33,8 +33,7 @@ if __name__ == '__main__':
     drone = Tello()
     cap_reader_writer: utils.Cv2CapReaderWriter
     try:
-        ring_sequence = [RingColor.RED, RingColor.YELLOW, RingColor.RED, RingColor.YELLOW, RingColor.RED,
-                         RingColor.YELLOW, RingColor.RED]
+        ring_sequence = [RingColor.YELLOW, RingColor.YELLOW]
 
         config = config_loader.get_configurations()
         drone.connect()
@@ -55,7 +54,7 @@ if __name__ == '__main__':
             q = queue.Queue()
             last_ring_navigated = Ring(x=0, y=0, z=0, area=0, color=RingColor.YELLOW)
             for index, ring in enumerate(ring_sequence):
-                logger.info(f"running sequence for ring {index}")
+                logger.info(f"running sequence for ring color {ring} is {index}")
                 flight_input = NavigatorInput(ring_color=ring,
                                               config=config,
                                               q=q,

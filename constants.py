@@ -15,13 +15,13 @@ e2e_height_yr = 115
 diameter_red_cms = 56
 diameter_yellow_cms = 48
 red_optimum_hover_ht = 160
-yellow_optimum_hover_ht = 85
+yellow_optimum_hover_ht = 70
 yellow_optimum_fly_ht = 85
 max_distance_btw_rings = 150
 
 # Drone Properties
 speed = 20
-hover_up_down_threshold = 10
+hover_up_down_threshold = 0
 right_left_threshold = 0
 max_velocity_up_down = 25
 max_velocity_right_left = 20
