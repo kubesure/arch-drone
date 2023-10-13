@@ -1,10 +1,9 @@
 from time import sleep
 from djitellopy import Tello
-
+import time
 import constants
 from drone_types import NavigatorInput, Direction, RingColor
 from arch_logger import logger
-from navigator.simple import adjust_drone_position_y
 
 
 def hover_at(inn: NavigatorInput, drone: Tello, attempt):
@@ -64,13 +63,101 @@ def move_to_y(drone, inn, y_direction, y_movement):
     if y_direction == Direction.UP:
         logger.info(f"moving up {y_movement} ring {inn.ring_color}")
         if y_movement > threshold:
-            adjust_drone_position_y(drone, y_movement, y_direction)
+            # adjust_drone_position_y(drone, y_movement, y_direction)
+            drone.move_up(y_movement)
     elif y_direction == Direction.DOWN:
         logger.info(f"moving down {y_movement} ring {inn.ring_color}")
         if y_movement > threshold:
-            adjust_drone_position_y(drone, y_movement, y_direction)
+            # adjust_drone_position_y(drone, y_movement, y_direction)
+            drone.move_down(y_movement)
     elif y_direction == Direction.HOVER:
         logger.info(f"hovering at height {drone.get_height()}")
+
+
+class PIDController:
+    def __init__(self, kp, ki, kd):
+        self.kp = kp
+        self.ki = ki
+        self.kd = kd
+        self.prev_error = 0
+        self.integral = 0
+
+    def compute(self, error):
+        # speed = pid[0] * error + pid[1] * (error - pError)
+        self.integral += error
+        derivative = error - self.prev_error
+        output = self.kp * error + self.ki * self.integral + self.kd * derivative
+        self.prev_error = error
+        return output
+
+
+
+def adjust_drone_position_z(drone, difference, direction):
+    pid = PIDController(0.50, 0.50, 0.00)
+    velocity = pid.compute(difference)
+    logger.info(f"velocity from PID controller {velocity}")
+
+    # velocity = constants.max_velocity_right_left
+    logger.info(f"velocity {velocity}")
+
+    if direction == Direction.FORWARD:
+        logger.info(f"rc command {direction}")
+        drone.send_rc_control(0, int(velocity), 0, 0)
+        logger.info(f"sleep time {abs(difference) / velocity}")
+        time.sleep(abs(difference) / velocity)
+        drone.send_rc_control(0, 0, 0, 0)
+    elif direction == Direction.BACKWARD:
+        logger.info(f"rc command {direction}")
+        drone.send_rc_control(-int(velocity), 0, 0, 0)
+        logger.info(f"sleep time {abs(difference) / velocity}")
+        time.sleep(abs(difference) / velocity)
+        drone.send_rc_control(0, 0, 0, 0)
+
+
+def adjust_drone_position_x(drone, difference, direction):
+    pid = PIDController(0.50, 0.50, 0.00)
+    velocity = pid.compute(difference)
+    logger.info(f"velocity from PID controller {velocity}")
+
+    # velocity = constants.max_velocity_right_left
+    logger.info(f"velocity {velocity}")
+
+    if direction == Direction.LEFT:
+        logger.info(f"rc command {direction}")
+        drone.send_rc_control(-int(velocity), 0, 0, 0)
+        logger.info(f"sleep time {abs(difference) / velocity}")
+        time.sleep(1.25)
+        drone.send_rc_control(0, 0, 0, 0)
+    else:
+        logger.info(f"rc command {direction}")
+        drone.send_rc_control(int(velocity), 0, 0, 0)
+        logger.info(f"sleep time {abs(difference) / velocity}")
+        time.sleep(1.25)
+        drone.send_rc_control(0, 0, 0, 0)
+
+
+def adjust_drone_position_y(drone, difference, direction):
+    if direction == Direction.UP:
+        pid = PIDController(0.7, 0.7, 0.00)
+        velocity = pid.compute(difference)
+        # velocity = max(min(constants.max_velocity_up_down, velocity), -constants.max_velocity_up_down)
+        logger.info(f"velocity by pid {velocity}")
+        drone.send_rc_control(0, 0, int(velocity), 0)
+        logger.info(f"sleep time {abs(difference) / velocity}")
+        # time.sleep(abs(difference) / velocity)
+        time.sleep(2.5)
+        drone.send_rc_control(0, 0, 0, 0)
+    else:
+        pid = PIDController(0.7, 0.7, 0.00)
+        velocity = pid.compute(difference)
+        # velocity = max(min(constants.max_velocity_up_down, velocity), -constants.max_velocity_up_down)
+        logger.info(f"velocity by pid {velocity}")
+        drone.send_rc_control(0, 0, -int(velocity), 0)
+        logger.info(f"sleep time {abs(difference) / velocity}")
+        time.sleep(2.5)
+        # time.sleep(abs(difference) / velocity)
+        drone.send_rc_control(0, 0, 0, 0)
+
 
 
 def hover_time(duration):

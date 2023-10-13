@@ -3,95 +3,10 @@ from drone_types import Direction, Ring, NavigatorInput
 from djitellopy import Tello
 import plotter
 import utils
-from navigator.common import get_optimum_hover_height, hover_time
+from navigator.common import hover_time,adjust_drone_position_x, adjust_drone_position_y
 from threading import Thread
 import navigator
 from arch_logger import logger
-import time
-
-
-class PIDController:
-    def __init__(self, kp, ki, kd):
-        self.kp = kp
-        self.ki = ki
-        self.kd = kd
-        self.prev_error = 0
-        self.integral = 0
-
-    def compute(self, error):
-        # speed = pid[0] * error + pid[1] * (error - pError)
-        self.integral += error
-        derivative = error - self.prev_error
-        output = self.kp * error + self.ki * self.integral + self.kd * derivative
-        self.prev_error = error
-        return output
-
-
-def adjust_drone_position_z(drone, difference, direction):
-    pid = PIDController(0.50, 0.50, 0.00)
-    velocity = pid.compute(difference)
-    logger.info(f"velocity from PID controller {velocity}")
-
-    # velocity = constants.max_velocity_right_left
-    logger.info(f"velocity {velocity}")
-
-    if direction == Direction.FORWARD:
-        logger.info(f"rc command {direction}")
-        drone.send_rc_control(0, -int(velocity), 0, 0)
-        logger.info(f"sleep time {abs(difference) / velocity}")
-        time.sleep(abs(difference) / velocity)
-        drone.send_rc_control(0, 0, 0, 0)
-    else:
-        logger.info(f"rc command {direction}")
-        drone.send_rc_control(int(velocity), 0, 0, 0)
-        logger.info(f"sleep time {abs(difference) / velocity}")
-        time.sleep(abs(difference) / velocity)
-        drone.send_rc_control(0, 0, 0, 0)
-
-
-def adjust_drone_position_x(drone, difference, direction):
-    pid = PIDController(0.50, 0.50, 0.00)
-    velocity = pid.compute(difference)
-    logger.info(f"velocity from PID controller {velocity}")
-
-    # velocity = constants.max_velocity_right_left
-    logger.info(f"velocity {velocity}")
-
-    if direction == Direction.LEFT:
-        logger.info(f"rc command {direction}")
-        drone.send_rc_control(-int(velocity), 0, 0, 0)
-        logger.info(f"sleep time {abs(difference) / velocity}")
-        time.sleep(abs(difference) / velocity)
-        drone.send_rc_control(0, 0, 0, 0)
-    else:
-        logger.info(f"rc command {direction}")
-        drone.send_rc_control(int(velocity), 0, 0, 0)
-        logger.info(f"sleep time {abs(difference) / velocity}")
-        time.sleep(abs(difference) / velocity)
-        drone.send_rc_control(0, 0, 0, 0)
-
-
-def adjust_drone_position_y(drone, difference, direction):
-    if direction == Direction.UP:
-        pid = PIDController(0.7, 0.7, 0.00)
-        velocity = pid.compute(difference)
-        # velocity = max(min(constants.max_velocity_up_down, velocity), -constants.max_velocity_up_down)
-        logger.info(f"velocity by pid {velocity}")
-        drone.send_rc_control(0, 0, int(velocity), 0)
-        logger.info(f"sleep time {abs(difference) / velocity}")
-        # time.sleep(abs(difference) / velocity)
-        time.sleep(2.5)
-        drone.send_rc_control(0, 0, 0, 0)
-    else:
-        pid = PIDController(0.7, 0.7, 0.00)
-        velocity = pid.compute(difference)
-        # velocity = max(min(constants.max_velocity_up_down, velocity), -constants.max_velocity_up_down)
-        logger.info(f"velocity by pid {velocity}")
-        drone.send_rc_control(0, 0, -int(velocity), 0)
-        logger.info(f"sleep time {abs(difference) / velocity}")
-        time.sleep(2.5)
-        # time.sleep(abs(difference) / velocity)
-        drone.send_rc_control(0, 0, 0, 0)
 
 
 def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello, cap_reader_writer) -> (bool, Ring):
@@ -114,12 +29,12 @@ def do_x_correction(cap_reader_writer, drone, inn, ring) -> Ring:
     x_direction, x_movement, next_ring = corrected_x(inn, ring, drone, cap_reader_writer)
     logger.info(f"moving {x_movement} {x_direction} for ring {inn.ring_position}")
     if x_direction == Direction.RIGHT:
-        adjust_drone_position_x(drone, x_movement, x_direction)
-        # drone.move_right(x_movement)
+        # adjust_drone_position_x(drone, x_movement, x_direction)
+        drone.move_right(x_movement)
         return next_ring
     if x_direction == Direction.LEFT:
-        adjust_drone_position_x(drone, x_movement, x_direction)
-        # drone.move_left(x_movement)
+        # adjust_drone_position_x(drone, x_movement, x_direction)
+        drone.move_left(x_movement)
         return next_ring
     return ring
 

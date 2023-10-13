@@ -33,7 +33,8 @@ if __name__ == '__main__':
     drone = Tello()
     cap_reader_writer: utils.Cv2CapReaderWriter
     try:
-        ring_sequence = [RingColor.YELLOW, RingColor.YELLOW]
+        ring_sequence = [RingColor.YELLOW, RingColor.YELLOW, RingColor.YELLOW, RingColor.YELLOW,
+                         RingColor.YELLOW,RingColor.YELLOW,RingColor.YELLOW,RingColor.YELLOW]
 
         config = config_loader.get_configurations()
         drone.connect()
@@ -42,7 +43,7 @@ if __name__ == '__main__':
         cap_reader_writer = utils.Cv2CapReaderWriter()
         logger.info(f"battery percentage - {drone.get_battery()}")
         if drone.get_battery() < 80:
-            logger.info(f"battery less than 50% will cause issues flight re-charge")
+            logger.info(f"battery less than {drone.get_battery()}% will cause issues flight re-charge")
             drone.end()
         else:
             drone.takeoff()
@@ -58,7 +59,7 @@ if __name__ == '__main__':
                 flight_input = NavigatorInput(ring_color=ring,
                                               config=config,
                                               q=q,
-                                              duration=2,
+                                              duration=3,
                                               last_ring_navigated=last_ring_navigated,
                                               ring_position=index)
                 detected, ring = hover_and_get_ring(flight_input, drone, cap_reader_writer)
