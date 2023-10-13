@@ -7,6 +7,7 @@ class ContourFilter:
 
     def __init__(self):
         pass
+
     def empty(self, a):
         pass
 
@@ -31,6 +32,7 @@ class ContourFilter:
 
         return lower, upper, known_width, iteration
 
+    # compute and return the distance from the maker to the camera
 
     # Get the filter contour from image
     def get_xyz_ring(self, img, ring: RingColor):
@@ -49,8 +51,6 @@ class ContourFilter:
                 mask = cv2.bitwise_or(mask, cv2.inRange(img_hsv, lower, upper))
 
         result = cv2.bitwise_and(img, img, mask=mask)
-        # mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-
         img_blur = cv2.GaussianBlur(result, (3, 3), 0, borderType=cv2.BORDER_CONSTANT)
         img_gray = cv2.cvtColor(img_blur, cv2.COLOR_BGR2GRAY)
         img_canny = cv2.Canny(img_gray, 166, 175)
@@ -65,16 +65,16 @@ class ContourFilter:
 
         for cnt in contours:
             area = cv2.contourArea(cnt)
-            areaMin = 0
+            area_min = 0
             if ring == RingColor.RED:
-                areaMin = 12000
+                area_min = 12000
             elif ring == RingColor.YELLOW:
-                areaMin = 7000
+                area_min = 7000
 
             peri = cv2.arcLength(cnt, closure_curve)
             approx = cv2.approxPolyDP(cnt, 0.02 * peri, closure_curve)
 
-            if area > areaMin and len(approx) > 4:
+            if area > area_min and len(approx) > 4:
                 x, y, bounding_rect_width, bounding_rect_height = cv2.boundingRect(approx)
                 center_x = int(x + (bounding_rect_width / 2))  # CENTER X OF THE OBJECT
                 center_y = int(y + (bounding_rect_height / 2))  # CENTER y OF THE OBJECT
@@ -82,6 +82,8 @@ class ContourFilter:
 
                 cv2.circle(img, (int(center_x), int(center_y)), 3, (0, 0, 0), -1)
                 cv2.rectangle(img, (x, y), (x + bounding_rect_width, y + bounding_rect_height), (0, 255, 0), 5)
+                cv2.putText(img, "A: " + str(int(area)), (x + bounding_rect_width + 20, y + 20),
+                            cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
                 cv2.putText(img, "X: " + str(int(center_x)), (x + bounding_rect_width + 20, y + 20),
                             cv2.FONT_HERSHEY_COMPLEX, 0.7, (0, 255, 0), 2)
                 cv2.putText(img, "Y: " + str(int(center_y)), (x + bounding_rect_width + 20, y + 20),
@@ -91,9 +93,8 @@ class ContourFilter:
         # error should only return of collect in if condition
         center_x = int(center_x / 10)
         r = Ring(x=center_x, y=center_y, z=distance, area=area, color=ring)
-        return r, img, result, img_canny, img_dil
+        return r, img
 
-    # compute and return the distance from the maker to the camera
     def distance_to_camera(self, known_width, focal_length, perceived_width):
         distance = ((known_width * focal_length) / perceived_width) * 2.54
         return int(distance)
