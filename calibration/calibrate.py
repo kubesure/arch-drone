@@ -3,6 +3,8 @@
 
 import numpy as np
 import cv2
+import os
+
 
 image_folder = "./data/images/chessboard"
 
@@ -14,7 +16,6 @@ objp[:, :2] = np.mgrid[0:pattern_size[0], 0:pattern_size[1]].T.reshape(-1, 2)
 obj_points = []
 img_points = []
 
-import os
 
 for filename in os.listdir(image_folder):
     if filename.endswith(".jpg"):

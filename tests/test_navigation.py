@@ -1,7 +1,7 @@
 import unittest
 from drone_types import Direction
 import constants
-import simple
+from navigator import simple
 
 
 class MyTestCase(unittest.TestCase):

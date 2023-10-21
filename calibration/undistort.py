@@ -1,12 +1,11 @@
 import cv2
 import numpy as np
-import config_loader
+import constants
 
 
-def undistort_image(image):
-    config = config_loader.get_configurations()
-    camera_matrix = np.array([[config['fx'], 0, 948.6125189630379], [0, config['fy'], 948.6125189630379], [0, 0, 1]])
-    dist_coeffs = np.array([config['k1'], config['k2'], 0.07210298657979947, 0.028448930285605897, 1.9340687673193722])
+def un_distort_image(image):
+    camera_matrix = np.array([[constants.fx, 0, 948.6125189630379], [0, constants.fy, 948.6125189630379], [0, 0, 1]])
+    dist_coeffs = np.array([constants.k1, constants.k2, 0.07210298657979947, 0.028448930285605897, 1.9340687673193722])
     h, w = image.shape[:2]
     new_camera_matrix, roi = cv2.getOptimalNewCameraMatrix(camera_matrix, dist_coeffs, (w, h), 1, (w, h))
 

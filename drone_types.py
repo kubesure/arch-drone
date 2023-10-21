@@ -54,7 +54,7 @@ class DroneState:
 @dataclass
 class NavigatorInput:
     ring_color: RingColor
-    config: Dict[str, Union[float, int]]
+    # config: Dict[str, Union[float, int]]
     q: queue.Queue
     duration: int
     last_ring_navigated: Ring

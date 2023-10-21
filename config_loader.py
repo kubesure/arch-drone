@@ -1,6 +1,7 @@
 import configparser
 
 
+# deprecated
 def get_configurations():
     config = configparser.ConfigParser()
     config.read('config.ini')

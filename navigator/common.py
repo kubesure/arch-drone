@@ -14,7 +14,6 @@ def hover_at(inn: NavigatorInput, drone: Tello, attempt):
     if attempt != 4:
         y_direction, y_movement = get_optimum_hover_height(drone, inn)
         move_to_y(drone, inn, y_direction, y_movement)
-    # hover_time(2)
 
     if attempt == 1:
         logger.debug(f"attempt {attempt} executing scan")
@@ -91,7 +90,6 @@ class PIDController:
         return output
 
 
-
 def adjust_drone_position_z(drone, difference, direction):
     pid = PIDController(0.50, 0.50, 0.00)
     velocity = pid.compute(difference)
@@ -157,7 +155,6 @@ def adjust_drone_position_y(drone, difference, direction):
         time.sleep(2.5)
         # time.sleep(abs(difference) / velocity)
         drone.send_rc_control(0, 0, 0, 0)
-
 
 
 def hover_time(duration):

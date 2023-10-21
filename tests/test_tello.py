@@ -22,7 +22,7 @@ def rc_command(direction: Direction, speed):
         drone.send_rc_control(0, 0, speed, 0)
     elif direction.STOP:
         drone.send_command_with_return("stop")
-        #drone.send_rc_control(0, 0, 0, 0)
+        # drone.send_rc_control(0, 0, 0, 0)
 
 
 try:
@@ -39,7 +39,7 @@ try:
         rc_command(Direction.STOP, 0)
         common.hover_time(3)
         rc_command(Direction.LEFT, 20)
-        rc_command(Direction.STOP,0)
+        rc_command(Direction.STOP, 0)
         common.hover_time(3)
         break
     drone.end()

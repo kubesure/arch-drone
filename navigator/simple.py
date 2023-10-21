@@ -3,7 +3,7 @@ from drone_types import Direction, Ring, NavigatorInput
 from djitellopy import Tello
 import plotter
 import utils
-from navigator.common import hover_time,adjust_drone_position_x, adjust_drone_position_y
+from navigator.common import hover_time
 from threading import Thread
 import navigator
 from arch_logger import logger

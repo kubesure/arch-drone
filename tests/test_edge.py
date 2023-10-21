@@ -1,19 +1,19 @@
 import cv2
-import config_loader
 from detector import edge as ed
 
 # cap = cv2.VideoCapture(0)
 # cap = cv2.VideoCapture('./data/videos/drone_scan_360.mov')
-cap = cv2.VideoCapture('./data/videos/drone_scan_360.mov')
-# cap = cv2.VideoCapture('./data/videos/scan_2_rinr_angular_1.mov')
-# cap = cv2.VideoCapture('./data/videos/scan_2_rinr_angular_1.mov')
+cap = cv2.VideoCapture('../data/videos/drone_scan_360.mov')
+# cap = cv2.VideoCapture('./data/videos/scan_2_ring_angular_1.mov')
+# cap = cv2.VideoCapture('./data/videos/scan_2_ring_angular_1.mov')
+# cap = cv2.VideoCapture('./data/videos/scan_2_ring_angular_1.mov')
 
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
         break
 
-    detector = ed.EdgeDector(config_loader.get_configurations())
+    detector = ed.EdgeDetector()
     result = detector.get_x_y_z(frame)
 
     if result is not None:

@@ -2,7 +2,7 @@ import cv2
 from detector import contour
 from drone_types import RingColor
 
-cap = cv2.VideoCapture('./data/videos/test_run_20231008_155428.mp4')
+cap = cv2.VideoCapture('../data/videos/test_run_20231008_155428.mp4')
 cl = contour.ContourFilter()
 
 while True:

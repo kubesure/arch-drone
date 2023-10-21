@@ -34,7 +34,7 @@ if __name__ == '__main__':
     cap_reader_writer: utils.Cv2CapReaderWriter
     try:
         ring_sequence = [RingColor.YELLOW, RingColor.YELLOW, RingColor.YELLOW, RingColor.YELLOW,
-                         RingColor.YELLOW,RingColor.YELLOW,RingColor.YELLOW,RingColor.YELLOW]
+                         RingColor.YELLOW, RingColor.YELLOW, RingColor.YELLOW, RingColor.YELLOW]
 
         config = config_loader.get_configurations()
         drone.connect()
@@ -49,7 +49,6 @@ if __name__ == '__main__':
             drone.takeoff()
             navigator.common.hover_time(1)
             drone.set_speed(constants.speed)
-            # navigator.common.hover_time(1)
             if not drone.is_flying:
                 raise DroneException("Take off error", DroneErrorCode.TakeOffError)
             q = queue.Queue()
@@ -57,7 +56,6 @@ if __name__ == '__main__':
             for index, ring in enumerate(ring_sequence):
                 logger.info(f"running sequence for ring color {ring} is {index}")
                 flight_input = NavigatorInput(ring_color=ring,
-                                              config=config,
                                               q=q,
                                               duration=3,
                                               last_ring_navigated=last_ring_navigated,
