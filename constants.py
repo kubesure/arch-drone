@@ -18,6 +18,8 @@ red_optimum_hover_ht = 160
 yellow_optimum_hover_ht = 70
 yellow_optimum_fly_ht = 85
 max_distance_btw_rings = 150
+yellow_ring_minimum_area_threshold = 7000
+red_ring_minimum_area_threshold = 12000
 
 # Drone Properties
 speed = 20
@@ -30,6 +32,8 @@ upper_limit_right_left = 200
 lower_limit_up_down = 20
 upper_limit_up_down = 500
 buffer_distance = 15
+focal_length_camera = 42
+
 
 
 

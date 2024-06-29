@@ -1,10 +1,10 @@
 #### Introduction
 This project involves creating an autonomous drone using the DJI Tello and the OpenCV library for a navigation competition. 
-We developed algorithms to allow the drone to navigate and avoid obstacles using computer vision techniques.
 
 #### Project Description
 ##### Objective
-The goal was to build a drone that can navigate autonomously through rings (see video) using computer vision techniques.  
+The goal was to build a drone that can navigate autonomously through a sequence of vertically colored rings using computer vision
+techniques.
 
 ##### Hardware Setup
 - **Drone:** DJI Tello
@@ -14,22 +14,21 @@ The goal was to build a drone that can navigate autonomously through rings (see 
 - **Libraries:** OpenCV, `djitellopy`
 
 #### Implementation Steps
-1. **Setting Up:** We started by setting up the development environment and ensuring the Tello drone was ready for programming.
-   Install the  [DJI app](https://apps.apple.com/ae/app/tello/id1330559633) and calibrate the drone. 
-2. **Integrating OpenCV:** Using OpenCV, we developed algorithms for object detection and navigation.
-3. **Autonomous Navigation:** Implemented computer vision techniques to allow the drone to navigate and avoid obstacles.
+1. **Setting Up:** Development environment setup and Tello calibration using [DJI app](https://apps.apple.com/ae/app/tello/id1330559633) . 
+2. **Integrating OpenCV:** Use OpenCV and develop algorithms for object detection.
+3. **Autonomous Navigation:** Implement drone navigation through rings.
 
-##### Broad steps of detection and navigation (refer to launch.py to follow the code path for complete detection navigation)
-
+##### Broad steps of detection and navigation
 1. Drone takes off   
-2. Hovers at a preset Y-axis   
-3. Detects the nearest ring (X, Y, Z are found)  
-4. Corrects its position on x and y, moves forward z distance through the center of the ring  
-5. Repeats Hover, Detect, Correct and Navigate until all rings are over and lands
+2. Hovers or throttles to Y-axis   
+3. Detects next in sequence the nearest colored ring i.e., its X-axis (Roll - left right), Y-axis (throttle up down) and Z-axis(Pitch up down)   
+4. Corrects its position by rolling, throttling to the detected ring 
+5. Pitches forward only to the ring   
+6. Repeats Hover, Detect, Correct and Pitch until all rings are passed through and lands
 #####
 
-##### Object Detection (refer to complete code in launch.py)
-This code snippet shows launch and hover, detect, correct and move loop 
+##### Step 1—Main controller—Launch Hover Detect Navigate Loop (refer to complete code in launch.py)
+This code snippet shows the main controller launch, hover, detect, correct and move loop 
 ```python
 drone.takeoff()
 navigator.common.hover_time(1)
@@ -55,10 +54,57 @@ for index, ring in enumerate(ring_sequence):
     else:
         logger.info("No rings detected")
 ```
-#####
 
-##### Object (ring) Detection (refer to complete code in detector/contour.py)
-This code snippet shows how to detect objects using OpenCV. Gets rings x,y,z in the frame during the hover duration.  
+##### Step 2 and 3 - Object / Ring detection 1—(refer to complete code in launch.py)
+Get the closest colored ring in sequence. Drone hover and ring detection take place simultaneously. Hover thread 
+(navigator/common.py.hover_at)completes after hover duration, during the hover period, plotter (plotter.py) gets multiple 
+rings which are filtered to get a single ring by utils.get_avg_distance (utils.py)
+```python
+def hover_and_get_ring(inn: NavigatorInput, dronee, cap_read_write) -> (bool, Ring):
+    """
+    Hover the drone and detect rings in the surroundings.
+
+    Parameters:
+    inn (NavigatorInput): Input containing details about the navigation.
+    dronee (Tello): Drone object to control movements.
+    cap_read_write: Object to read and write data for ring detection.
+
+    Returns:
+    tuple: A tuple containing a boolean indicating detection success and the detected Ring object.
+
+    Process:
+    1. Initialize attempt count and detection status.
+    2. Start a thread to hover the drone and detect rings.
+    3. Plotter detects rings and join the hover thread.
+    4. Return the average distance of detected ring.
+
+    The method hovers the drone at a specified position and captures video frames to detect rings.
+    It then processes the detected rings to find the average position of all detected rings and returns
+    the average ring's position and detection status.
+    """
+    attempts = 1
+    is_detected = False
+    rings_detected: List[Ring] = []
+
+    # Start a thread to hover the drone and detect rings
+    while not is_detected:
+        drone_hover = Thread(target=navigator.common.hover_at, args=(inn, dronee, attempts))
+        drone_hover.start()
+
+        # Capture and plot the detected rings
+        rings_detected = plotter.plot(inn, cap_read_write)
+        drone_hover.join()
+
+        if attempts == 1:
+            break
+
+    # Return the average distance of the nearest ring out the detected rings
+    return utils.get_avg_distance(rings_detected)
+```
+
+##### Step 2 and 3 - Object / Ring Detection 2 using OpenCV (refer to complete code in detector/contour.py)
+This code snippet shows how to detect objects using OpenCV. This functions returns multiple rings and their x,y,z distance.
+Only rings in the drone's camera frame are captured.
 ```python
 def get_xyz_ring(self, img, ring: RingColor):
         """
@@ -72,7 +118,7 @@ def get_xyz_ring(self, img, ring: RingColor):
         tuple: A Ring object with the x, y, z coordinates and area, and the processed image with annotations.
         """
         closure_curve = True  # Indicates whether the contour is closed
-        focal_length = 42  # Focal length of the camera
+        focal_length = constants.focal_length_camera  # Focal length of the camera is 42
 
         # Get HSV color range, known width, and iteration count for the specified ring color
         lowers, uppers, known_width, iteration = self.get_ring_hsv(ring)
@@ -119,9 +165,9 @@ def get_xyz_ring(self, img, ring: RingColor):
             area = cv2.contourArea(cnt)  # Calculate the area of the contour
             area_min = 0  # Minimum area threshold
             if ring == RingColor.RED:
-                area_min = 12000
+                area_min = 12000 # interested area found after multiple trial runs
             elif ring == RingColor.YELLOW:
-                area_min = 7000
+                area_min = 7000 # interested area found after multiple trial runs
 
             peri = cv2.arcLength(cnt, closure_curve)  # Calculate the perimeter of the contour
             approx = cv2.approxPolyDP(cnt, 0.02 * peri, closure_curve)  # Approximate the contour
@@ -155,35 +201,10 @@ def get_xyz_ring(self, img, ring: RingColor):
         return r, img  # Return the Ring object and the annotated image
 ```
 
-##### Navigation  
-These code snippet shows how to navigate the drone to the detected ring. 
-
-```python (Refer to common.py for complete code)
-def hover_at(inn: NavigatorInput, drone: Tello, attempt):
-    """
-    Hover the drone at a specific height Y-axis and perform scanning routines while in hover for detection to get rings.
-
-    Parameters:
-    inn (NavigatorInput): Input containing details about the navigation.
-    drone (Tello): Drone object to control movements.
-    attempt (int): The current attempt number for hovering and scanning.
-
-    Process:
-    1. Log the current attempt and ring color.
-    2. Perform height adjustment for attempts other than 4.
-    3. Execute different scanning routines based on the attempt number.
-    """
-    logger.debug(f"Attempt {attempt} on ring {inn.ring_color} with duration {inn.duration}")
-  
-    if attempt != 4:
-        y_direction, y_movement = get_optimum_hover_height(drone, inn)
-        move_to_y(drone, inn, y_direction, y_movement)
-
-        # move code in common.py....
-```        
         
-After y-axis correction drone is aligned on x-axis in relation to the center of ring and moves forward
-
+##### Step 4—Navigate to ring 
+After y-axis correction, the drone is aligned on x-axis in relation to the center of the ring and moves forward    
+#####
 ```python (Refer to navigator/simple.py for complete code)
 def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello, cap_reader_writer) -> (bool, Ring):
     """
@@ -201,68 +222,74 @@ def navigate_to(inn: NavigatorInput, ring: Ring, drone: Tello, cap_reader_writer
     Process:
     1. Log the navigation start.
     2. Hover for a second to stabilize the drone.
-    3. Calculate the distance to travel and log the information.
-    4. Move the drone forward by the calculated distance.
-    5. Perform x-axis correction.
-    6. Return success status and the ring object.
+    3. Calculate the distance + buffer to travel and log the information.
+    4. Move the drone forward by the calculated distance.    
+    5. Return success status and the ring object.
     """
     logger.info(f"Navigating to ring {inn.ring_color} at position {inn.ring_position}")
     hover_time(1)  # Hover to stabilize the drone
 
-    # Calculate the distance to travel
+    # Calculate the distance to travel add buffer to move beyond the edge of the ring 
     distance_to_travel = ring.z + constants.buffer_distance
     logger.info(f"Moving forward -- {distance_to_travel} = {ring.z} + {constants.buffer_distance}")
 
     # Move the drone forward
     drone.move_forward(distance_to_travel)
 
-    # Perform x-axis correction
-    do_x_correction(cap_reader_writer, drone, inn, ring)
-
-    return True, ring
     #... more code in simple.py
 ```
 
-
 #### Challenges and Solutions
-We faced several challenges, from setting up the drone's SDK to debugging the navigation algorithms. Our persistence and
-collaborative effort helped us overcome these hurdles, leading to a successful project.
+We faced several challenges, from setting up the drone's SDK to debugging the navigation algorithms. 
 
-- **Challenge:** Integrating the Tello drone with OpenCV.
-  - **Solution:** We used the `djitellopy` library to facilitate communication with the Tello drone and handled video streaming with OpenCV.
-- **Challenge:** Navigation algorithms. 
-  - or else you drone will not navigate well with DJI tello library. If its crashes behave cranky re-calibrate. 
-  - Its highly recommend to use a PID controller to avoid the out calibration errors even when you re-calibrate sometime.
-- **Challenge:** Developing reliable object detection algorithms.
-  - **Solution:** We experimented with different thresholding and contour detection techniques to identify objects and navigate accordingly.
+- **Challenge and Solution:**
+  - Integrating the Tello drone with OpenCV.
+    - We used the `djitellopy` library to facilitate communication with the Tello drone and handled video with OpenCV.
+    - Used version 2.4.0 for better camera support or else red and yellow colors appear blue. 
+  - Navigation algorithms and Drone API.
+    - If the drone crashes or behaves cranky, re-calibrate using the Tello app. 
+    - After a crash or for unknown reasons if Tello drone responds with out-of-range errors do re-calibration.
+      Tello sensors and firmware assume the drone is operating out of range on x-axis and y-axis. 
+    - Only take off if the drone battery is 80% charged or else it can impact throttle and roll.
+    - It's highly recommended to use a PID controller to avoid the out of range errors even when you re-calibrate. 
+      Refer to common.py for the PID controller. We could not implement as we ran out of time for testing.
+  - Developing reliable object detection algorithms.
+    - We experimented with different detection techniques to identify objects before finalizing 
+      detection through contours as that work best for a colored rings. 
+    - Better approach could be would be to use Yolo + OpenCV 
+  - Focal length for Distance calculation or Z-axis or pitch distance.   
+    - The focal length of 42 is accurate for Tello drone.     
+    - However, a better approach would be to use camera calibration and chessboard pattern technique.
+      Refer to calibration/calibrate.py and data/images/chessboard. The code calculates the correct camera 
+      calibration. But, Drone camera focal length using calibration matrix and coefficients needs more work.
 
 #### Results and Demonstration
-The outcome was a fully functional autonomous drone capable of navigating through various environments. Below are some key highlights from the video demonstration:
+The outcome was a fully functional autonomous drone capable of navigating through yellow rings. Below are some key 
+highlights from the video demonstration:
 
 1. **Takeoff and Initialization (0:00 - 0:10)**
-   - The drone takes off smoothly and initializes its systems, preparing for autonomous navigation.
+   - The drone takes off smoothly and initializes for its first pitch.
 
-2. **Object Detection in Action (0:20 - 0:30)**
-   - The drone successfully identifies objects in its path using the OpenCV-based detection algorithm. The contours of the objects are highlighted in the video.
+2. **Object Detection in Action (Throughout the video)**
+   - The drone successfully identifies objects in its path using the OpenCV-based detection algorithm. The contours of 
+     the objects are highlighted in the video.
 
-3. **Navigation Decisions (0:30 - 0:40)**
-   - Based on the detected objects, the drone makes decisions to move left, right, or forward. This part of the video shows the drone avoiding obstacles effectively.
+3. **Navigation Decisions (0:30–0:50)**
+   - Based on the detected objects, the drone makes decisions to move left, right, adjustments.  
 
-4. **Distance Calculation (0:40 - 0:50)**
-   - The drone calculates the distance to nearby objects using a simple linear relationship. This helps it maintain a safe distance while navigating.
+4. **Distance Calculation (Throughout the video)**
+   - The drone calculates the distance to the nearest ring. Watch distance besides letter 'Z'
 
-5. **Successful Navigation (0:50 - 1:00)**
-   - The drone successfully navigates through the environment, demonstrating its ability to avoid obstacles and follow a path autonomously.
-
-6. **Landing (1:10 - 1:20)**
-   - After completing its navigation task, the drone lands safely, showing the effectiveness of the landing procedures implemented.
+5. **Successful Navigation and landing (1:18 - 1:23)**
+   - The drone successfully navigates through the yellow rings and land, demonstrating its ability to avoid obstacles 
+     and follow a path autonomously.
 
 [Watch the video demonstration](https://youtu.be/L_odr1_XLm4)
 
 #### Conclusion
-This project taught us a lot about the intricacies of computer vision and quadcopters. We are excited about the future possibilities
-and improvements we can make like using Yolo + OpenCv, re-enforcement Learning and building our [drone](https://www.amazon.ae/gp/cart/view.html?ref_=nav_top_cart)
+This project taught us a lot about the intricacies of computer vision and quadcopters. We are excited about the future 
+possibilities and improvements we can make, like using Yolo + OpenCv, re-enforcement learning and building our own [drone](https://www.amazon.ae/gp/cart/view.html?ref_=nav_top_cart)
 with Raspberry Pi     
 
 #### Acknowledgments
-Special thanks to Viral Gohil for his invaluable contribution object detection and distance calculation. 
+Special thanks to Viral Gohil for his contribution as a team member and to the critical distance calculation. 
